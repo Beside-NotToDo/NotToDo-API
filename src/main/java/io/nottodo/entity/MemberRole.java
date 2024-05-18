@@ -3,26 +3,30 @@ package io.nottodo.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
-public class MemberRole extends BaseDate {
+@Table(name = "MEMBER_ROLE")
+public class MemberRole {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_role_id")
+    @Comment(value = "회원 권한 기본키")
+    @Column(name = "MEMBER_ROLE_ID")
     private Long id;
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
-    private Role role;
-    
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @Comment(value = "회원 기본키")
+    @JoinColumn(name = "MEMBER_ID")
     private Member member;
     
+    @ManyToOne(fetch = FetchType.LAZY)
+    @Comment(value = "권한 기본키")
+    @JoinColumn(name = "ROLE_ID")
+    private Role role;
     
-
+    
     
     public void setMember(Member member) {
         if (this.member != null) {

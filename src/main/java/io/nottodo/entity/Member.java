@@ -1,27 +1,51 @@
 package io.nottodo.entity;
 
 
+import io.nottodo.login.LoginType;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
 import org.hibernate.annotations.Comment;
+import org.springframework.data.annotation.CreatedBy;
+import org.springframework.data.annotation.LastModifiedBy;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity
 @Getter
-public class Member extends BaseDate {
+@Table(name = "member")
+public class Member {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
+    @Comment(value = "회원 기본키")
+    @Column(name = "MEMBER_ID")
     private Long id;
     
-    @Comment(value = "로그인 아이디")
+    @Comment(value = "로그인아이디")
+    @Column(name = "USERNAME")
     private String username;
-    @Comment(value = "비밀 번호")
+    
+    @Comment(value = "비밀번호")
+    @Column(name = "PASSWORD")
     private String password;
+    
+    @Column(name = "MEMBER_LOGIN_TYPE")
+    @Comment(value = "회원 로그인 타입")
+    @Enumerated(EnumType.STRING)
+    private LoginType loginType;
+    
+    @CreatedBy
+    @Comment(value = "가입일시")
+    @Column(name = "JOIN_DATE")
+    private LocalDateTime joinDate;
+    
+    @LastModifiedBy
+    @Comment(value = "수정일시")
+    @Column(name = "UPDATE_DATE")
+    private LocalDateTime updateDate;
     
     
     @OneToMany(mappedBy = "member")
@@ -29,7 +53,6 @@ public class Member extends BaseDate {
     private List<MemberRole> memberRoles = new ArrayList<>();
     
     
- 
     public void passSetting(String password) {
         this.password = password;
     }

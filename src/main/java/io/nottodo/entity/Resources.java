@@ -4,6 +4,7 @@ package io.nottodo.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
+import org.hibernate.annotations.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,20 +16,21 @@ public class Resources {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "resources_id")
+    @Comment(value = "리소스 기본키")
+    @Column(name = "RESOURCES_ID")
     private Long id;
     
-    @Column(name = "resource_name")
+    @Comment(value = "리소스 이름")
+    @Column(name = "RESOURCE_NAME")
     private String resourceName;
     
-    @Column(name = "http_method")
+    @Comment(value = "http메소드")
+    @Column(name = "HTTP_METHOD")
     private String httpMethod;
     
-    @Column(name = "order_num")
+    @Comment(value = "정렬 순서")
+    @Column(name = "ORDER_NUM")
     private int orderNum;
-    
-    @Column(name = "resource_type")
-    private String resourceType;
     
     
     @OneToMany(mappedBy = "resources")

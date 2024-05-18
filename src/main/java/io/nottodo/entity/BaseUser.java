@@ -12,7 +12,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 @MappedSuperclass
 @EntityListeners(AuditingEntityListener.class)
 @Getter
-public class BaseUser extends BaseDate{
+public class BaseUser {
 
     
     @Comment(value = "등록자")

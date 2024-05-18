@@ -10,17 +10,17 @@ public class ResourcesRole {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "resource_id")
+    @Column(name = "RESOURCES_ROLE_ID")
     private Long id;
     
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "role_id")
+    @JoinColumn(name = "ROLE")
     private Role role;
     
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resources_id")
+    @JoinColumn(name = "RESOURCES_ID")
     private Resources resources;
     
     

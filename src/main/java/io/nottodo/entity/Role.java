@@ -4,6 +4,7 @@ package io.nottodo.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
+import org.hibernate.annotations.Comment;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +17,12 @@ public class Role {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "role_id")
+    @Comment(value = "권한 기본키")
+    @Column(name = "ROLE_ID")
     private Long id;
     
+    @Comment(value = "권한 이름")
+    @Column(name = "ROLE_NAME")
     private String roleName;
     
     
