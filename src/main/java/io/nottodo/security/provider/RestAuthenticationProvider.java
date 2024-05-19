@@ -12,6 +12,7 @@ import io.nottodo.repository.RoleRepository;
 import io.nottodo.security.service.MemberDetailService;
 import io.nottodo.security.token.KakaoAuthenticationToken;
 import io.nottodo.security.validation.KakaoTokenValidator;
+import io.nottodo.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -31,11 +32,8 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
     
     private final MemberDetailService memberDetailsService;
     private final KakaoTokenValidator kakaoTokenValidator;
-    private final MemberRepository memberRepository;
-    private final MemberRoleRepository memberRoleRepository;
-    private final RoleRepository roleRepository;
+    private final MemberService memberService;
     @Override
-    @Transactional
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         KakaoAuthenticationToken token = (KakaoAuthenticationToken) authentication;// 엑세스토큰
         String kakaoAccessToken = (String) token.getPrincipal();
@@ -45,20 +43,9 @@ public class RestAuthenticationProvider implements AuthenticationProvider {
             // 유효한 토큰인 경우 권한을 설정하여 인증 객체 반환
             JsonNode kakaoUserInfo = kakaoTokenValidator.getUserInfo(kakaoAccessToken);
             String username =  kakaoUserInfo.get("id").asText();
-            MemberContext memberContext = (MemberContext) memberDetailsService.loadUserByUsername(username);
+            MemberContext memberContext = (MemberContext) memberDetailsService.loadUserByUsernameAndKakaoInfo(username,kakaoUserInfo);
             
-            if (memberContext == null) {
-                Member createMember = new Member(username, UUID.randomUUID().toString(), LoginType.KAKAO);
-                Member member = memberRepository.save(createMember);
-                Role role = roleRepository.findByName("ROLE_USER");
-                MemberRole memberRole = new MemberRole();
-                memberRole.setMember(member);
-                memberRole.setRole(role);
-                memberRoleRepository.save(memberRole);
-            }
-            
-            List<GrantedAuthority> authorities = List.of(new SimpleGrantedAuthority("ROLE_USER"));
-            return new KakaoAuthenticationToken(kakaoAccessToken, null, authorities);
+            return new KakaoAuthenticationToken(memberContext.getMemberDto(), null, memberContext.getAuthorities());
         } else {
             throw new AuthenticationException("Invalid Kakao Access Token") {};
         }

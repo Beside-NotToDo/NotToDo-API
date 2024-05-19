@@ -2,7 +2,9 @@ package io.nottodo.security.validation;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.extern.slf4j.Slf4j;
 import org.hibernate.annotations.Comment;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -11,20 +13,23 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestTemplate;
 
 @Component
+@Slf4j
 public class KakaoTokenValidator {
     
-    private static final String KAKAO_TOKEN_INFO_URL = "https://kapi.kakao.com/v1/user/access_token_info";
-    private static final String KAKAO_TOKEN_USER_URL = "https://kapi.kakao.com/v2/user/me";
+    @Value("${kakao.token.info.url}")
+    private String kakaoTokenInfoUrl;
+    @Value("${kakao.token.user.url}")
+    private String kakaoTokenUserUrl;
     
     
-    public  boolean  isValidKakaoToken(String kakaoAccessToken) {
+    public boolean isValidKakaoToken(String kakaoAccessToken) {
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.set("Authorization", "Bearer " + kakaoAccessToken);
             
             HttpEntity<String> entity = new HttpEntity<>(headers);
             RestTemplate restTemplate = new RestTemplate();
-            ResponseEntity<String> response = restTemplate.exchange(KAKAO_TOKEN_INFO_URL, HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(kakaoTokenInfoUrl, HttpMethod.GET, entity, String.class);
             
             // 응답 코드가 200인 경우 토큰이 유효함
             return response.getStatusCode().is2xxSuccessful();
@@ -33,6 +38,7 @@ public class KakaoTokenValidator {
             return false;
         }
     }
+    
     public JsonNode getUserInfo(String kakaoAccessToken) {
         try {
             RestTemplate restTemplate = new RestTemplate();
@@ -41,13 +47,14 @@ public class KakaoTokenValidator {
             headers.set("Authorization", "Bearer " + kakaoAccessToken);
             
             HttpEntity<String> entity = new HttpEntity<>(headers);
-            ResponseEntity<String> response = restTemplate.exchange(KAKAO_TOKEN_USER_URL, HttpMethod.GET, entity, String.class);
+            ResponseEntity<String> response = restTemplate.exchange(kakaoTokenUserUrl, HttpMethod.GET, entity, String.class);
             
             if (response.getStatusCode().is2xxSuccessful()) {
                 return objectMapper.readTree(response.getBody());
             }
             return null;
         } catch (Exception e) {
+            log.info("getUserInfo 에러 = {}", e.getMessage());
             return null;
         }
     }

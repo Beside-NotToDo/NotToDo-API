@@ -1,7 +1,9 @@
 package io.nottodo.security.config;
 
 
+import com.nimbusds.jose.jwk.OctetSequenceKey;
 import io.nottodo.security.filter.KaKaoAuthenticationFilter;
+import io.nottodo.signature.MacSecuritySigner;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +14,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -21,6 +24,9 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     
     private final AuthenticationProvider restAuthenticationProvider;
+    private final MacSecuritySigner macSecuritySigner;
+    private final OctetSequenceKey octetSequenceKey;
+    private final JwtDecoder hS256JwtDecoder;
     
     
     @Bean
@@ -30,8 +36,9 @@ public class SecurityConfig {
         AuthenticationManager manager = managerBuilder.build();
         
         http.authorizeHttpRequests(auth -> auth.
-                        anyRequest().permitAll())
-                .addFilterBefore(kaKaoAuthenticationFilter(manager), UsernamePasswordAuthenticationFilter.class)
+                        anyRequest().authenticated())
+                .addFilterBefore(kaKaoAuthenticationFilter(manager,macSecuritySigner,octetSequenceKey), UsernamePasswordAuthenticationFilter.class)
+                .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(hS256JwtDecoder)))
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
@@ -42,8 +49,8 @@ public class SecurityConfig {
         return http.build();
     }
     
-    private KaKaoAuthenticationFilter kaKaoAuthenticationFilter(AuthenticationManager manager) {
-        KaKaoAuthenticationFilter kaKaoAuthenticationFilter = new KaKaoAuthenticationFilter();
+    private KaKaoAuthenticationFilter kaKaoAuthenticationFilter(AuthenticationManager manager, MacSecuritySigner macSecuritySigner, OctetSequenceKey octetSequenceKey) {
+        KaKaoAuthenticationFilter kaKaoAuthenticationFilter = new KaKaoAuthenticationFilter(macSecuritySigner,octetSequenceKey);
         kaKaoAuthenticationFilter.setAuthenticationManager(manager);
         return kaKaoAuthenticationFilter;
     }

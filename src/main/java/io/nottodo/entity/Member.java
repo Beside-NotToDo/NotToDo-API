@@ -5,8 +5,9 @@ import io.nottodo.login.LoginType;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.Comment;
-import org.springframework.data.annotation.CreatedBy;
-import org.springframework.data.annotation.LastModifiedBy;
+import org.springframework.data.annotation.CreatedDate;
+import org.springframework.data.annotation.LastModifiedDate;
+import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,6 +19,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@EntityListeners(AuditingEntityListener.class)
 public class Member {
     
     @Id
@@ -30,6 +32,10 @@ public class Member {
     @Column(name = "USERNAME")
     private String username;
     
+    @Comment(value = "회원 이름")
+    @Column(name = "MEMBER_NAME")
+    private String memberName;
+    
     @Comment(value = "비밀번호")
     @Column(name = "PASSWORD")
     private String password;
@@ -39,12 +45,12 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private LoginType loginType;
     
-    @CreatedBy
+    @CreatedDate
     @Comment(value = "가입일시")
     @Column(name = "JOIN_DATE")
     private LocalDateTime joinDate;
     
-    @LastModifiedBy
+    @LastModifiedDate
     @Comment(value = "수정일시")
     @Column(name = "UPDATE_DATE")
     private LocalDateTime updateDate;
@@ -55,13 +61,10 @@ public class Member {
     private List<MemberRole> memberRoles = new ArrayList<>();
     
     
-    public void passSetting(String password) {
-        this.password = password;
-    }
-    
-    public Member(String username, String password, LoginType loginType) {
+    public Member(String username, String password, String nickname, LoginType loginType) {
         this.username = username;
         this.password = password;
+        this.memberName = nickname;
         this.loginType = loginType;
     }
 }
