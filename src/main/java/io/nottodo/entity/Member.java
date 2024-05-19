@@ -3,8 +3,7 @@ package io.nottodo.entity;
 
 import io.nottodo.login.LoginType;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.ToString;
+import lombok.*;
 import org.hibernate.annotations.Comment;
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -16,6 +15,9 @@ import java.util.List;
 @Entity
 @Getter
 @Table(name = "member")
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Member {
     
     @Id
@@ -55,5 +57,11 @@ public class Member {
     
     public void passSetting(String password) {
         this.password = password;
+    }
+    
+    public Member(String username, String password, LoginType loginType) {
+        this.username = username;
+        this.password = password;
+        this.loginType = loginType;
     }
 }
