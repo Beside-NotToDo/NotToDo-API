@@ -18,7 +18,6 @@ import java.util.List;
 @Table(name = "member")
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 @EntityListeners(AuditingEntityListener.class)
 public class Member {
     
