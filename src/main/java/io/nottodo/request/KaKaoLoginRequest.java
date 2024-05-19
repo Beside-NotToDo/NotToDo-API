@@ -8,24 +8,26 @@ import lombok.Setter;
 @Getter
 @Setter
 public class KaKaoLoginRequest {
-    @JsonProperty("access_token")
+    @JsonProperty("accessToken")
     private String accessToken;
     
-    @JsonProperty("token_type")
+    @JsonProperty("tokenType")
     private String tokenType;
     
-    @JsonProperty("refresh_token")
+    @JsonProperty("refreshToken")
     private String refreshToken;
     
-    @JsonProperty("id_token")
+    @JsonProperty("idToken")
     private String idToken;
     
-    @JsonProperty("expires_in")
+    @JsonProperty("expiresIn")
     private int expiresIn;
     
     @JsonProperty("scope")
     private String scope;
     
-    @JsonProperty("refresh_token_expires_in")
+    @JsonProperty("refreshTokenExpiresIn")
     private int refreshTokenExpiresIn;
+    
+   
 }
