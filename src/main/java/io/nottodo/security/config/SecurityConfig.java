@@ -25,6 +25,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
     
     private final AuthenticationProvider kakaoAuthenticationProvider;
+    private final AuthenticationProvider appleAuthenticationProvider;
     private final MacSecuritySigner macSecuritySigner;
     private final OctetSequenceKey octetSequenceKey;
     private final JwtDecoder hS256JwtDecoder;
@@ -34,6 +35,7 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder managerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
         managerBuilder.authenticationProvider(kakaoAuthenticationProvider);
+        managerBuilder.authenticationProvider(appleAuthenticationProvider);
         AuthenticationManager manager = managerBuilder.build();
         
         http.authorizeHttpRequests(auth -> auth.
