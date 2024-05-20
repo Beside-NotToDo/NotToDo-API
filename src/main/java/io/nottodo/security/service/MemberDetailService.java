@@ -1,6 +1,7 @@
 package io.nottodo.security.service;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import io.jsonwebtoken.Claims;
 import io.nottodo.context.MemberContext;
 import io.nottodo.dto.MemberDto;
 import io.nottodo.entity.Member;
@@ -33,7 +34,7 @@ public class MemberDetailService implements UserDetailsService {
         Member member = memberRepository.findByUsername(username);
         
         if (member == null) {
-            Member createMember = new Member(username, UUID.randomUUID().toString(), UUID.randomUUID().toString(), LoginType.KAKAO);
+            Member createMember = new Member(username, UUID.randomUUID().toString(), UUID.randomUUID().toString(), LoginType.APPLE);
             member = memberService.createMember(createMember);
         }
         
@@ -55,6 +56,25 @@ public class MemberDetailService implements UserDetailsService {
             
             String realName = kakaoUserInfo.get("properties").get("nickname").asText(); // 실명
             Member createMember = new Member(username, UUID.randomUUID().toString(), realName, LoginType.KAKAO);
+            member = memberService.createMember(createMember);
+        }
+        
+        MemberDto memberDto = MemberDto.createMemberDto(member);
+        List<GrantedAuthority> authorities = memberDto.getMemberRoles()
+                .stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+        
+        return new MemberContext(memberDto, authorities);
+    }
+    
+    @Transactional
+    public UserDetails loadUserByUsernameAndAppleInfo(String username, Claims appleUserInfo) throws UsernameNotFoundException {
+        Member member = memberRepository.findByUsername(username);
+        if (member == null) {
+            String realName = appleUserInfo.get("name", String.class); // 실명
+            String email = appleUserInfo.get("email", String.class); // 이메일
+            Member createMember = new Member(username, UUID.randomUUID().toString(), realName, LoginType.APPLE);
             member = memberService.createMember(createMember);
         }
         

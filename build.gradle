@@ -37,6 +37,9 @@ dependencies {
     implementation 'org.mariadb.jdbc:mariadb-java-client'
     implementation 'p6spy:p6spy:3.9.1'
     implementation 'com.github.gavlyukovskiy:datasource-decorator-spring-boot-autoconfigure:1.9.0'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2'
+    runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.11.2'
 }
 
 tasks.named('test') {

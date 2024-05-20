@@ -2,6 +2,7 @@ package io.nottodo.security.config;
 
 
 import com.nimbusds.jose.jwk.OctetSequenceKey;
+import io.nottodo.security.filter.AppleAuthenticationFilter;
 import io.nottodo.security.filter.KaKaoAuthenticationFilter;
 import io.nottodo.signature.MacSecuritySigner;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 @RequiredArgsConstructor
 public class SecurityConfig {
     
-    private final AuthenticationProvider restAuthenticationProvider;
+    private final AuthenticationProvider kakaoAuthenticationProvider;
     private final MacSecuritySigner macSecuritySigner;
     private final OctetSequenceKey octetSequenceKey;
     private final JwtDecoder hS256JwtDecoder;
@@ -32,16 +33,15 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         AuthenticationManagerBuilder managerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        managerBuilder.authenticationProvider(restAuthenticationProvider);
+        managerBuilder.authenticationProvider(kakaoAuthenticationProvider);
         AuthenticationManager manager = managerBuilder.build();
         
         http.authorizeHttpRequests(auth -> auth.
                         anyRequest().authenticated())
                 .addFilterBefore(kaKaoAuthenticationFilter(manager,macSecuritySigner,octetSequenceKey), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(appleAuthenticationFilter(manager,macSecuritySigner,octetSequenceKey), UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(hS256JwtDecoder)))
-                .sessionManagement(session -> session
-                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .csrf(AbstractHttpConfigurer::disable)
                 .authenticationManager(manager)
         
@@ -53,5 +53,11 @@ public class SecurityConfig {
         KaKaoAuthenticationFilter kaKaoAuthenticationFilter = new KaKaoAuthenticationFilter(macSecuritySigner,octetSequenceKey);
         kaKaoAuthenticationFilter.setAuthenticationManager(manager);
         return kaKaoAuthenticationFilter;
+    }
+    
+    private AppleAuthenticationFilter appleAuthenticationFilter(AuthenticationManager manager, MacSecuritySigner macSecuritySigner, OctetSequenceKey octetSequenceKey) {
+        AppleAuthenticationFilter appleAuthenticationFilter = new AppleAuthenticationFilter(macSecuritySigner, octetSequenceKey);
+        appleAuthenticationFilter.setAuthenticationManager(manager);
+        return appleAuthenticationFilter;
     }
 }

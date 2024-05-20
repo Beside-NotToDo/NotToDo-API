@@ -2,37 +2,22 @@ package io.nottodo.security.provider;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import io.nottodo.context.MemberContext;
-import io.nottodo.entity.Member;
-import io.nottodo.entity.MemberRole;
-import io.nottodo.entity.Role;
-import io.nottodo.login.LoginType;
-import io.nottodo.repository.MemberRepository;
-import io.nottodo.repository.MemberRoleRepository;
-import io.nottodo.repository.RoleRepository;
 import io.nottodo.security.service.MemberDetailService;
 import io.nottodo.security.token.KakaoAuthenticationToken;
 import io.nottodo.security.validation.KakaoTokenValidator;
-import io.nottodo.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
-import java.util.UUID;
 
 @RequiredArgsConstructor
-@Component(value = "restAuthenticationProvider")
-public class RestAuthenticationProvider implements AuthenticationProvider {
+@Component(value = "kakaoAuthenticationProvider")
+public class KakaoAuthenticationProvider implements AuthenticationProvider {
     
     private final MemberDetailService memberDetailsService;
     private final KakaoTokenValidator kakaoTokenValidator;
-    private final MemberService memberService;
+  
     @Override
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         KakaoAuthenticationToken token = (KakaoAuthenticationToken) authentication;// 엑세스토큰
