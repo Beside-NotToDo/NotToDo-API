@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @ToString
-@Table(name = "role")
+@Table(name = "ROLE")
 public class Role {
 
     
@@ -43,4 +43,5 @@ public class Role {
         role.roleName = name;
         return role;
     }
+    
 }

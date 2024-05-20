@@ -9,12 +9,14 @@ public class AppleAuthenticationToken  extends AbstractAuthenticationToken {
     
     private final Object principal;
     private final Object credentials;
+    private final String name;
     
 
     public AppleAuthenticationToken(Object principal, Object credentials,  Collection<? extends GrantedAuthority> authorities) {
         super(authorities);
         this.principal = principal;
         this.credentials = credentials;
+        this.name = null;
         setAuthenticated(true);
     }
     
@@ -22,6 +24,15 @@ public class AppleAuthenticationToken  extends AbstractAuthenticationToken {
         super(null);
         this.principal = principal;
         this.credentials = credentials;
+        this.name = null;
+        setAuthenticated(false);
+    }
+    
+    public AppleAuthenticationToken(Object principal, Object credentials, String name) {
+        super(null);
+        this.principal = principal;
+        this.credentials = credentials;
+        this.name = name;
         setAuthenticated(false);
     }
     
@@ -34,5 +45,10 @@ public class AppleAuthenticationToken  extends AbstractAuthenticationToken {
     @Override
     public Object getPrincipal() {
         return this.principal;
+    }
+    
+    @Override
+    public String getName() {
+        return this.name;
     }
 }

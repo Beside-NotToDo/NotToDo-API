@@ -8,18 +8,12 @@ import lombok.Setter;
 @Setter
 public class AppleLoginRequest {
     
-    @JsonProperty("idToken")
-    private String idToken;
+    @JsonProperty("authorizationCode")
+    private String authorizationCode;
     
-    @JsonProperty("code")
-    private String code;
+    @JsonProperty("identityToken")
+    private String identityToken;
     
-    @JsonProperty("user")
-    private String user;
-    
-    @JsonProperty("state")
-    private String state;
-    
-    @JsonProperty("expiresIn")
-    private int expiresIn;
+    @JsonProperty("name")
+    private String name;
 }

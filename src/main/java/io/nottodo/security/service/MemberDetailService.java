@@ -69,10 +69,10 @@ public class MemberDetailService implements UserDetailsService {
     }
     
     @Transactional
-    public UserDetails loadUserByUsernameAndAppleInfo(String username, Claims appleUserInfo) throws UsernameNotFoundException {
+    public UserDetails loadUserByUsernameAndAppleInfo(String username, Claims appleUserInfo, String realName) throws UsernameNotFoundException {
         Member member = memberRepository.findByUsername(username);
         if (member == null) {
-            String realName = appleUserInfo.get("name", String.class); // 실명
+           
             String email = appleUserInfo.get("email", String.class); // 이메일
             Member createMember = new Member(username, UUID.randomUUID().toString(), realName, LoginType.APPLE);
             member = memberService.createMember(createMember);

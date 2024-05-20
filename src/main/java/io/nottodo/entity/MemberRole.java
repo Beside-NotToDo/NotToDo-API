@@ -7,7 +7,7 @@ import org.hibernate.annotations.Comment;
 
 @Entity
 @Getter
-@Table(name = "member_role")
+@Table(name = "MEMBER_ROLE")
 public class MemberRole {
     
     @Id

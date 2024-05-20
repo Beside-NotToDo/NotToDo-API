@@ -30,13 +30,14 @@ public class AppleAuthenticationProvider implements AuthenticationProvider {
     public Authentication authenticate(Authentication authentication) throws AuthenticationException {
         AppleAuthenticationToken token = (AppleAuthenticationToken) authentication;
         String idToken = (String) token.getPrincipal();
+        String realName =  token.getName();
         
-        // 카카오 액세스 토큰을 검증하는 로직 추가
         if (appleTokenValidator.isValidAppleToken(idToken)) {
-            // 유효한 토큰인 경우 권한을 설정하여 인증 객체 반환
+            
             Claims claims = appleTokenValidator.getUserInfoFromToken(idToken);
-            String userId = claims.getSubject();  // "sub" 클레임에서 사용자 ID 추출
-            MemberContext memberContext = (MemberContext) memberDetailService.loadUserByUsernameAndAppleInfo(userId,claims);
+            String userId = claims.getSubject();  //
+            
+            MemberContext memberContext = (MemberContext) memberDetailService.loadUserByUsernameAndAppleInfo(userId,claims,realName);
             return new AppleAuthenticationToken(memberContext.getMemberDto(), null, memberContext.getAuthorities());
         }
         

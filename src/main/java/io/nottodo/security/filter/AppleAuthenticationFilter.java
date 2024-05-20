@@ -45,15 +45,21 @@ public class AppleAuthenticationFilter extends AbstractAuthenticationProcessingF
             if (!HttpMethod.POST.name().equals(request.getMethod())) {
                 throw new IllegalArgumentException("Post 요청이 아닙니다.");
             }
-            
             AppleLoginRequest loginRequest = objectMapper.readValue(request.getReader(), AppleLoginRequest.class);
-            String idToken = loginRequest.getIdToken();
+            String authorizationCode = loginRequest.getAuthorizationCode();
+            String identityToken = loginRequest.getIdentityToken();
+            String name = loginRequest.getName() != null  ? loginRequest.getName() : null;
             
-            if (idToken == null || idToken.isEmpty()) {
-                throw new IllegalArgumentException("애플 ID 토큰이 없습니다.");
+            
+            if (authorizationCode == null || authorizationCode.isEmpty()) {
+                throw new IllegalArgumentException("Authorization Code가 없습니다.");
+            }
+            if (identityToken == null || identityToken.isEmpty()) {
+                throw new IllegalArgumentException("Identity Token이 없습니다.");
             }
             
-            AppleAuthenticationToken authRequest = new AppleAuthenticationToken(idToken, null);
+            
+            AppleAuthenticationToken authRequest = new AppleAuthenticationToken(identityToken, authorizationCode,name);
             return this.getAuthenticationManager().authenticate(authRequest);
             
         } catch (IllegalArgumentException e) {

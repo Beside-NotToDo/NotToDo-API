@@ -6,6 +6,7 @@ import lombok.Getter;
 
 @Entity
 @Getter
+@Table(name ="RESOURCES_ROLE" )
 public class ResourcesRole {
 
     @Id
