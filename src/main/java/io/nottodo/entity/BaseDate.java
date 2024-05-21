@@ -19,11 +19,11 @@ public class BaseDate {
     
     
     
-    @Comment(value = "생성일시")
+    @Comment(value = "생성 일자")
     @CreatedDate
     private LocalDateTime createAt;
     
-    @Comment(value = "수정일시")
+    @Comment(value = "수정 일자")
     @LastModifiedDate
     private LocalDateTime updateAt;
     
