@@ -16,11 +16,11 @@ public class NotTodoList extends BaseDate{
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Comment(value = "낫 투두 리스트 기본키")
     @Column(name = "NOT_TODO_LIST_ID")
-    private Integer id;
+    private Long id;
     
-    @Comment(value = "낫 투두 리스트 제목")
-    @Column(name = "NOT_TODO_LIST_TITLE")
-    private String notTodoListTitle;
+    @Comment(value = "낫 투두 리스트 내용")
+    @Column(name = "NOT_TODO_LIST_CONTENT")
+    private String notTodoListContent;
     
     @Comment(value = "시작 일자")
     @Column(name = "START_DATE")
@@ -38,6 +38,22 @@ public class NotTodoList extends BaseDate{
     @Comment(value = "카테고리 기본키")
     @JoinColumn(name = "CATEGORY_ID")
     private Category category;
+    
+    
+    public static NotTodoList createNotTodoEntity(String notTodoListContent, LocalDate startDate, LocalDate endDate) {
+        NotTodoList notTodoList = new NotTodoList();
+        notTodoList.notTodoListContent = notTodoListContent;
+        notTodoList.startDate = startDate;
+        notTodoList.endDate = endDate;
+        return notTodoList;
+    }
+    
+
+    public void updateNotTodoEntity( String content, LocalDate startDate, LocalDate endDate) {
+        this.notTodoListContent = content;
+        this.startDate = startDate;
+        this.endDate = endDate;
+    }
     
     /**
      * 연관 관계 편의 메서드

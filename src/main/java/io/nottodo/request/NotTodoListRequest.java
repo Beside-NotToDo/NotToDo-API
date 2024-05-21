@@ -6,9 +6,9 @@ import java.time.LocalDate;
 @Data
 public class NotTodoListRequest {
     
-    private String notTodoListTitle;
+    private String notTodoListContent;
     private LocalDate startDate;
     private LocalDate endDate;
-    private Integer categoryId;
+    private Long categoryId;
 
 }

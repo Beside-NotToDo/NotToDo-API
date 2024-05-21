@@ -11,7 +11,7 @@ import java.time.LocalDate;
 public class NotTodoListDto {
     
     
-    private Integer id;
+    private Long id;
     private String notTodoListTitle;
     private LocalDate startDate;
     private LocalDate endDate;
