@@ -16,7 +16,7 @@ public class ResourcesRole {
     
     
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "ROLE")
+    @JoinColumn(name = "ROLE_ID")
     private Role role;
     
     
