@@ -12,7 +12,7 @@ import java.util.List;
 @Entity
 @Getter
 @ToString
-@Table(name = "ROLE")
+@Table(name = "role")
 public class Role {
 
     

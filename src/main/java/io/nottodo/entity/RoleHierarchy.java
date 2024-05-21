@@ -9,7 +9,8 @@ import java.util.Set;
 
 @Getter
 @Entity
-@Table(name = "ROLE_HIERARCHY")
+@Table(name = "role_hierarchy")
+
 public class RoleHierarchy {
     
     @Id

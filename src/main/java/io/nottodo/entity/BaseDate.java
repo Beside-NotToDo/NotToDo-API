@@ -15,8 +15,9 @@ import java.time.LocalDateTime;
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 public class BaseDate {
-
-
+    
+    
+    
     
     @Comment(value = "생성일시")
     @CreatedDate

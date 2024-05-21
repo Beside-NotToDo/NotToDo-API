@@ -15,7 +15,7 @@ import java.util.List;
 
 @Entity
 @Getter
-@Table(name = "MEMBER")
+@Table(name = "member")
 @NoArgsConstructor
 @AllArgsConstructor
 @EntityListeners(AuditingEntityListener.class)
@@ -58,6 +58,10 @@ public class Member {
     @OneToMany(mappedBy = "member")
     @ToString.Exclude
     private List<MemberRole> memberRoles = new ArrayList<>();
+    
+    @OneToMany(mappedBy = "member")
+    @ToString.Exclude
+    private List<NotTodoList> notTodoLists = new ArrayList<>();
     
     
     public Member(String username, String password, String nickname, LoginType loginType) {
