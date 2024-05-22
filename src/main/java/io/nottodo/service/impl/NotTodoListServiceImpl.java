@@ -1,5 +1,6 @@
 package io.nottodo.service.impl;
 
+import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import io.nottodo.dto.NotTodoListDto;
 import io.nottodo.entity.*;
@@ -10,14 +11,17 @@ import io.nottodo.request.NotTodoListRequest;
 import io.nottodo.service.NotTodoListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static com.querydsl.core.types.Projections.*;
 
 
 @RequiredArgsConstructor
 @Service
+@Transactional
 public class NotTodoListServiceImpl implements NotTodoListService {
     
     private final NotTodoListRepository notTodoListRepository;
@@ -26,43 +30,60 @@ public class NotTodoListServiceImpl implements NotTodoListService {
     private final JPAQueryFactory queryFactory;
     
     @Override
+    @Transactional(readOnly = true)
     public List<NotTodoListDto> getNotTodoList(Long memberId) {
         QMember member = QMember.member;
         QNotTodoList notTodoList = QNotTodoList.notTodoList;
         QCategory category = QCategory.category;
-        
         return queryFactory
-                .select(bean(NotTodoListDto.class,
-                        notTodoList.id.as("notTodoListId"),
-                        notTodoList.notTodoListContent.as("notTodoListContent"),
-                        notTodoList.startDate,
-                        notTodoList.endDate,
-                        member.id.as("memberId"),
-                        member.username.as("username"),
-                        member.memberName.as("memberName"),
-                        category.id.as("categoryId"),
-                        category.categoryName
-                ))
+                .select(notTodoList)
                 .from(notTodoList)
-                .join(notTodoList.member, member).fetchJoin()
-                .join(notTodoList.category, category).fetchJoin()
+                .leftJoin(notTodoList.member, member).fetchJoin()
+                .leftJoin(notTodoList.category, category).fetchJoin()
                 .where(member.id.eq(memberId))
-                .fetch();
-    }
+                .fetch()
+                .stream()
+                .map(n -> new NotTodoListDto(
+                        n.getId(),
+                        n.getNotTodoListContent(),
+                        n.getStartDate(),
+                        n.getEndDate(),
+                        n.getMember().getId(),
+                        n.getMember().getUsername(),
+                        n.getMember().getMemberName(),
+                        n.getCategory().getId(),
+                        n.getCategory().getCategoryName()
+                ))
+                .collect(Collectors.toList());
+}
    
     @Override
+    @Transactional(readOnly = true)
     public NotTodoListDto getNotTodoList(Long id, Long memberId) {
+        QMember member = QMember.member;
         QNotTodoList notTodoList = QNotTodoList.notTodoList;
-        return queryFactory
-                .select(bean(NotTodoListDto.class,
-                        notTodoList.id,
-                        notTodoList.notTodoListContent,
-                        notTodoList.startDate,
-                        notTodoList.endDate
-                ))
+        QCategory category = QCategory.category;
+        NotTodoList notTodo = queryFactory
+                .select(notTodoList)
                 .from(notTodoList)
+                .leftJoin(notTodoList.member, member).fetchJoin()
+                .leftJoin(notTodoList.category, category).fetchJoin()
                 .where(notTodoList.id.eq(id), notTodoList.member.id.eq(memberId))
                 .fetchOne();
+        
+        return new NotTodoListDto(
+                notTodo.getId()
+                , notTodo.getNotTodoListContent()
+                , notTodo.getStartDate()
+                , notTodo.getEndDate()
+                , notTodo.getMember().getId()
+                , notTodo.getMember().getUsername()
+                , notTodo.getMember().getMemberName()
+                , notTodo.getCategory().getId()
+                , notTodo.getCategory().getCategoryName()
+        );
+        
+        
     }
     
     

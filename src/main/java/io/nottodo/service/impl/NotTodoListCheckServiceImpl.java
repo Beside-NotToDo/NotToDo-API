@@ -28,8 +28,7 @@ public class NotTodoListCheckServiceImpl implements NotTodoListCheckService{
         LocalDate endDate = yearMonth.atEndOfMonth();
         
         // 해당 회원의 특정 기간에 해당하는 모든 낫 투두 리스트 항목을 조회
-        List<NotTodoList> notTodoLists = notTodoListRepository.findAllByMemberIdAndStartDateBeforeAndEndDateAfter(
-                memberId, endDate, startDate);
+        List<NotTodoList> notTodoLists = notTodoListRepository.findAllByMemberIdAndStartDateBeforeAndEndDateAfter(memberId, endDate, startDate);
         
         List<DailyComplianceDto> complianceList = new ArrayList<>();
         

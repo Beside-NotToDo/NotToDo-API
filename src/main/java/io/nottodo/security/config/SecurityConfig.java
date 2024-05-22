@@ -3,6 +3,7 @@ package io.nottodo.security.config;
 
 import com.nimbusds.jose.jwk.OctetSequenceKey;
 import io.nottodo.security.filter.AppleAuthenticationFilter;
+import io.nottodo.security.filter.JwtAuthorizationFilter;
 import io.nottodo.security.filter.KaKaoAuthenticationFilter;
 import io.nottodo.signature.MacSecuritySigner;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +41,7 @@ public class SecurityConfig {
     private final MacSecuritySigner macSecuritySigner;
     private final OctetSequenceKey octetSequenceKey;
     private final JwtDecoder hS256JwtDecoder;
+    private final JwtAuthorizationFilter jwtAuthenticationFilter;
     
     
     
@@ -52,6 +54,7 @@ public class SecurityConfig {
         
         http.authorizeHttpRequests(auth -> auth.
                         anyRequest().access(restAuthorizationManager))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(kaKaoAuthenticationFilter(manager,macSecuritySigner,octetSequenceKey), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(appleAuthenticationFilter(manager,macSecuritySigner,octetSequenceKey), UsernamePasswordAuthenticationFilter.class)
                 .oauth2ResourceServer(oauth -> oauth.jwt(jwt -> jwt.decoder(hS256JwtDecoder)))
@@ -65,7 +68,7 @@ public class SecurityConfig {
         ;
         return http.build();
     }
-    
+ 
     private KaKaoAuthenticationFilter kaKaoAuthenticationFilter(AuthenticationManager manager, MacSecuritySigner macSecuritySigner, OctetSequenceKey octetSequenceKey) {
         KaKaoAuthenticationFilter kaKaoAuthenticationFilter = new KaKaoAuthenticationFilter(macSecuritySigner,octetSequenceKey);
         kaKaoAuthenticationFilter.setAuthenticationManager(manager);

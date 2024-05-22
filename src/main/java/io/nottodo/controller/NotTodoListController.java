@@ -6,8 +6,9 @@ import io.nottodo.exception.InvalidDateRangeException;
 import io.nottodo.jwt.JwtUtil;
 import io.nottodo.request.NotTodoListRequest;
 import io.nottodo.service.NotTodoListService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.validation.annotation.Validated;
@@ -18,12 +19,14 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/not-todo-lists")
+@Slf4j
+@ResponseStatus(HttpStatus.OK)
 public class NotTodoListController {
     private final NotTodoListService notTodoListService;
     private final JwtUtil jwtUtil;
     
     // 조회 - 전체 조회
-    @GetMapping
+    @GetMapping("")
     public List<NotTodoListDto> getAllNotTodoLists(@AuthenticationPrincipal Jwt jwt) {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
         return notTodoListService.getNotTodoList(memberId);
@@ -37,7 +40,7 @@ public class NotTodoListController {
     }
     
     //작성
-    @PostMapping
+    @PostMapping("")
     public Long createNotTodoList(@Validated @RequestBody NotTodoListRequest notTodoListRequest, @AuthenticationPrincipal Jwt jwt) {
         // 날짜 검증
         if (notTodoListRequest.getEndDate().isBefore(notTodoListRequest.getStartDate())) {
