@@ -1,20 +1,21 @@
 package io.nottodo.advice;
 
 
+import io.nottodo.exception.InvalidDateRangeException;
 import io.nottodo.response.ErrorResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
 
 @Slf4j
-@ControllerAdvice
+@RestControllerAdvice
 public class ExceptionController {
     
     
@@ -31,6 +32,11 @@ public class ExceptionController {
         fieldErrors.forEach(err -> errorResponse.addValidation(err.getField(), err.getDefaultMessage()));
         
         return errorResponse;
-        
+    }
+    
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(InvalidDateRangeException.class)
+    public ErrorResponse handleInvalidDateRangeException(InvalidDateRangeException e) {
+        return new ErrorResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage());
     }
 }

@@ -2,7 +2,6 @@ package io.nottodo.service;
 
 import io.nottodo.dto.NotTodoListDto;
 import io.nottodo.request.NotTodoListRequest;
-import jakarta.validation.Valid;
 
 import java.util.List;
 
@@ -12,6 +11,8 @@ public interface NotTodoListService {
     
      List<NotTodoListDto> getNotTodoList(Long memberId);
     
+     NotTodoListDto getNotTodoList(Long id, Long memberId);
+     
     // 작성
     Long createNotTodoList(NotTodoListRequest notTodoListRequest , Long memberId);
     
@@ -19,5 +20,5 @@ public interface NotTodoListService {
     Long modifyNotTodoList(Long id,  NotTodoListRequest notTodoListRequest, Long memberId);
     // 삭제
     
-    Long deleteNotTodoList();
+    Long deleteNotTodoList(Long id, Long memberId);
 }

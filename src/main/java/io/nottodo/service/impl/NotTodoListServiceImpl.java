@@ -8,7 +8,6 @@ import io.nottodo.repository.MemberRepository;
 import io.nottodo.repository.NotTodoListRepository;
 import io.nottodo.request.NotTodoListRequest;
 import io.nottodo.service.NotTodoListService;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -50,6 +49,22 @@ public class NotTodoListServiceImpl implements NotTodoListService {
                 .where(member.id.eq(memberId))
                 .fetch();
     }
+   
+    @Override
+    public NotTodoListDto getNotTodoList(Long id, Long memberId) {
+        QNotTodoList notTodoList = QNotTodoList.notTodoList;
+        return queryFactory
+                .select(bean(NotTodoListDto.class,
+                        notTodoList.id,
+                        notTodoList.notTodoListContent,
+                        notTodoList.startDate,
+                        notTodoList.endDate
+                ))
+                .from(notTodoList)
+                .where(notTodoList.id.eq(id), notTodoList.member.id.eq(memberId))
+                .fetchOne();
+    }
+    
     
     @Override
     public Long createNotTodoList(NotTodoListRequest request, Long memberId) {
@@ -80,7 +95,9 @@ public class NotTodoListServiceImpl implements NotTodoListService {
     }
     
     @Override
-    public Long deleteNotTodoList() {
-        return null;
+    public Long deleteNotTodoList(Long id, Long memberId) {
+        NotTodoList notTodoList = notTodoListRepository.findByIdAndMemberId(id, memberId);
+        notTodoListRepository.delete(notTodoList);
+        return id;
     }
 }

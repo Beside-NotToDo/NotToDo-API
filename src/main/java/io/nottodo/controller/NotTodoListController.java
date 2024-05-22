@@ -1,9 +1,8 @@
 package io.nottodo.controller;
 
 
-import io.nottodo.dto.MemberDto;
 import io.nottodo.dto.NotTodoListDto;
-import io.nottodo.entity.Member;
+import io.nottodo.exception.InvalidDateRangeException;
 import io.nottodo.jwt.JwtUtil;
 import io.nottodo.request.NotTodoListRequest;
 import io.nottodo.service.NotTodoListService;
@@ -29,22 +28,43 @@ public class NotTodoListController {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
         return notTodoListService.getNotTodoList(memberId);
     }
+    
+    // 조회 - 하나 조회
+    @GetMapping("/{id}")
+    public NotTodoListDto getNotTodoList(@PathVariable("id") Long id, @AuthenticationPrincipal Jwt jwt) {
+        Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
+        return notTodoListService.getNotTodoList(id, memberId);
+    }
+    
     //작성
     @PostMapping
     public Long createNotTodoList(@Validated @RequestBody NotTodoListRequest notTodoListRequest, @AuthenticationPrincipal Jwt jwt) {
+        // 날짜 검증
+        if (notTodoListRequest.getEndDate().isBefore(notTodoListRequest.getStartDate())) {
+            throw new InvalidDateRangeException("종료 날짜는 시작 날짜보다 이후여야 합니다");
+        }
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
         return notTodoListService.createNotTodoList(notTodoListRequest, memberId);
         
     }
     //수정
-    @PutMapping("/{id}")
-    public Long updateNotTodoList(@PathVariable("id") Long id, @Valid @RequestBody NotTodoListRequest notTodoListRequest, @AuthenticationPrincipal Jwt jwt) {
+    @PatchMapping("/{id}")
+    public Long updateNotTodoList(@PathVariable("id") Long id, @Validated @RequestBody NotTodoListRequest notTodoListRequest, @AuthenticationPrincipal Jwt jwt) {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
+        
+        if (notTodoListRequest.getEndDate().isBefore(notTodoListRequest.getStartDate())) {
+            throw new InvalidDateRangeException("종료 날짜는 시작 날짜보다 이후여야 합니다");
+        }
         return notTodoListService.modifyNotTodoList(id, notTodoListRequest, memberId);
     }
     
     
-    //삭제
+    // 삭제
+    @DeleteMapping("/{id}")
+    public Long deleteNotTodoList(@PathVariable("id") Long id, @AuthenticationPrincipal Jwt jwt) {
+        Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
+        return notTodoListService.deleteNotTodoList(id, memberId);
+    }
     
     
 }
