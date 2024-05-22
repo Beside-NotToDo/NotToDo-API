@@ -3,14 +3,17 @@ package io.nottodo.entity;
 
 import jakarta.persistence.*;
 import lombok.Getter;
+import lombok.ToString;
 import org.hibernate.annotations.Comment;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "not_todo_list")
 @Getter
-public class NotTodoList extends BaseDate{
+public class NotTodoList extends BaseDate {
     
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -40,6 +43,11 @@ public class NotTodoList extends BaseDate{
     private Category category;
     
     
+    @OneToMany(mappedBy = "notTodoList")
+    @ToString.Exclude
+    private List<NotTodoListCheck> notTodoListCheck = new ArrayList<>();
+    
+    
     public static NotTodoList createNotTodoEntity(String notTodoListContent, LocalDate startDate, LocalDate endDate) {
         NotTodoList notTodoList = new NotTodoList();
         notTodoList.notTodoListContent = notTodoListContent;
@@ -48,8 +56,8 @@ public class NotTodoList extends BaseDate{
         return notTodoList;
     }
     
-
-    public void updateNotTodoEntity( String content, LocalDate startDate, LocalDate endDate) {
+    
+    public void updateNotTodoEntity(String content, LocalDate startDate, LocalDate endDate) {
         this.notTodoListContent = content;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -57,6 +65,7 @@ public class NotTodoList extends BaseDate{
     
     /**
      * 연관 관계 편의 메서드
+     *
      * @param member
      */
     public void setMember(Member member) {
@@ -69,6 +78,7 @@ public class NotTodoList extends BaseDate{
     
     /**
      * 연관 관계 편의 메서드
+     *
      * @param category
      */
     public void setCategory(Category category) {

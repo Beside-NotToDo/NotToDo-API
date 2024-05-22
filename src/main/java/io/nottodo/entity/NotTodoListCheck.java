@@ -1,5 +1,6 @@
 package io.nottodo.entity;
 
+import io.nottodo.request.NotTodoCheckRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import org.hibernate.annotations.Comment;
@@ -30,5 +31,24 @@ public class NotTodoListCheck extends BaseDate{
     private boolean isCompliant;
     
     
+    public static NotTodoListCheck createNotTodoCheck(NotTodoCheckRequest notTodoCheckRequest) {
+        NotTodoListCheck notTodoListCheck = new NotTodoListCheck();
+        notTodoListCheck.checkDate = notTodoCheckRequest.getCheckDate();
+        notTodoListCheck.isCompliant = notTodoCheckRequest.getIsCompliant();
+        return notTodoListCheck;
+    }
     
+    /**
+     * 연관 관계 편의메서드
+     * @param notTodoList
+     */
+    public void setNotTodoList(NotTodoList notTodoList) {
+        if (this.notTodoList != null) {
+            this.notTodoList.getNotTodoListCheck().remove(this);
+        } 
+        this.notTodoList = notTodoList;
+        notTodoList.getNotTodoListCheck().add(this);
+    }
+    
+   
 }
