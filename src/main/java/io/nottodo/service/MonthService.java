@@ -1,10 +1,14 @@
 package io.nottodo.service;
 
-import io.nottodo.dto.DailyComplianceDto;
+import io.nottodo.dto.day.MonthDto;
+import io.nottodo.dto.day.WeekDto;
 
+import java.time.LocalDate;
 import java.time.YearMonth;
-import java.util.List;
 
 public interface MonthService {
-    List<DailyComplianceDto> getMonthlyCompliance(Long memberId, YearMonth yearMonth);
+    MonthDto getMonthAndDaily(Long memberId, YearMonth yearMonth);
+    
+    WeekDto getWeekAndDaily(Long memberId, Integer month, Integer week);
+    
 }

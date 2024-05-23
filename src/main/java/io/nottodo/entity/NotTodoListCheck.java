@@ -50,5 +50,8 @@ public class NotTodoListCheck extends BaseDate{
         notTodoList.getNotTodoListCheck().add(this);
     }
     
-   
+    
+    public void modifyCheckList(NotTodoCheckRequest request) {
+        this.isCompliant = request.getIsCompliant();
+    }
 }

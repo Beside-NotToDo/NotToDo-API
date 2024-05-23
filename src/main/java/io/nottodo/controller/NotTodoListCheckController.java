@@ -1,19 +1,22 @@
 package io.nottodo.controller;
 
-import io.nottodo.dto.DailyComplianceDto;
+
 import io.nottodo.dto.NotTodoListCheckDto;
+import io.nottodo.dto.NotTodoListDto;
 import io.nottodo.request.NotTodoCheckRequest;
 import io.nottodo.service.NotTodoListCheckService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.YearMonth;
-import java.util.List;
+import java.time.LocalDate;
+
 
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/not-todo-list-check")
+@ResponseStatus(HttpStatus.OK)
 public class NotTodoListCheckController {
     private final NotTodoListCheckService notTodoListCheckService;
     
@@ -23,11 +26,16 @@ public class NotTodoListCheckController {
         return notTodoListCheckService.notTodoCheck(notTodoCheckRequest);
     }
     
-    @PatchMapping("")
-    public NotTodoListCheckDto modifyNotTodoListCheck(@Validated @RequestBody NotTodoCheckRequest notTodoCheckRequest) {
-        return null;
+    @PatchMapping("/{checkId}")
+    public NotTodoListCheckDto modifyNotTodoListCheck(@PathVariable("checkId") Long checkId, @Validated @RequestBody NotTodoCheckRequest notTodoCheckRequest) {
+        return notTodoListCheckService.updateNotTodoCheck(checkId,notTodoCheckRequest);
     }
- 
+    
+    @DeleteMapping("/{notTodoListId}")
+    public NotTodoListDto deleteNotTodoCheckAndUpdateEndDate(@PathVariable("notTodoListId") Long notTodoListId, @RequestParam LocalDate deleteDate) {
+        return notTodoListCheckService.deleteTodoChecksAndUpdateEndDate(notTodoListId, deleteDate);
+    }
+    
     
     
 }

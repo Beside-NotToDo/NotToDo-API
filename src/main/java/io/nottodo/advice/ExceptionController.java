@@ -39,4 +39,10 @@ public class ExceptionController {
     public ErrorResponse handleInvalidDateRangeException(InvalidDateRangeException e) {
         return new ErrorResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage());
     }
+    
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    public ErrorResponse illegalArgumentExceptionHandler(IllegalArgumentException e) {
+        return new ErrorResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), e.getMessage());
+    }
 }

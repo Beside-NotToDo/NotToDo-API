@@ -1,8 +1,14 @@
 package io.nottodo.service.impl;
 
-import io.nottodo.dto.DailyComplianceDto;
+import com.querydsl.jpa.impl.JPAQueryFactory;
+import io.nottodo.dto.day.DailyDto;
+import io.nottodo.dto.day.HeaderDto;
+import io.nottodo.dto.day.MonthDto;
+import io.nottodo.dto.day.WeekDto;
 import io.nottodo.entity.NotTodoList;
 import io.nottodo.entity.NotTodoListCheck;
+import io.nottodo.entity.QNotTodoList;
+import io.nottodo.entity.QNotTodoListCheck;
 import io.nottodo.repository.NotTodoListCheckRepository;
 import io.nottodo.repository.NotTodoListRepository;
 import io.nottodo.service.MonthService;
@@ -10,59 +16,191 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
+import java.time.format.TextStyle;
+import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
+import java.util.Locale;
+import java.util.stream.Collectors;
 @Transactional
 @RequiredArgsConstructor
 @Service
 public class MonthServiceImpl implements MonthService {
-    private final NotTodoListRepository notTodoListRepository;
-    private final NotTodoListCheckRepository notTodoListCheckRepository;
-    
+
+    private final JPAQueryFactory queryFactory;
     
     @Override
-    public List<DailyComplianceDto> getMonthlyCompliance(Long memberId, YearMonth yearMonth) {
+    public MonthDto getMonthAndDaily(Long memberId, YearMonth yearMonth) {
+        MonthDto monthDto = new MonthDto();
+        monthDto.setHeader(getMonthlyHeader(memberId, yearMonth));
+        List<DailyDto> dailyForMonth = getDailyForMonth(memberId, yearMonth);
+        monthDto.setDaily(dailyForMonth);
+        return monthDto;
+    }
+    
+    @Override
+    public WeekDto getWeekAndDaily(Long memberId, Integer month, Integer week) {
+        YearMonth yearMonth = YearMonth.of(LocalDate.now().getYear(), month);
+        LocalDate startDate = getStartOfWeek(yearMonth, week);
+        LocalDate endDate = getEndOfWeek(startDate);
+        WeekDto weekDto = new WeekDto();
+        weekDto.setStartDate(startDate.toString());
+        weekDto.setEndDate(endDate.toString());
+        weekDto.setHeader(getWeeklyHeader(memberId, startDate, endDate));
+        weekDto.setDaily(getDailyForWeek(memberId, startDate, endDate));
+        return weekDto;
+    }
+    
+    private LocalDate getStartOfWeek(YearMonth yearMonth, int week) {
+        LocalDate firstDayOfMonth = yearMonth.atDay(1);
+        LocalDate firstSunday = firstDayOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+        
+        return firstSunday.plusWeeks(week);
+    }
+    
+    private LocalDate getEndOfWeek(LocalDate startOfWeek) {
+        return startOfWeek.plusDays(6);
+    }
+    
+    private HeaderDto getMonthlyHeader(Long memberId, YearMonth month) {
+        HeaderDto headerDto = new HeaderDto();
+        headerDto.setMonth(month.getYear() + "년 " + month.getMonthValue() + "월");
+        
+        List<HeaderDto.WeeklyDto> collect = month.atDay(1)
+                .datesUntil(month.atEndOfMonth().plusDays(1))
+                .map(day -> {
+                    HeaderDto.WeeklyDto weeklyDto = new HeaderDto.WeeklyDto();
+                    weeklyDto.setDate(day.toString());
+                    weeklyDto.setWeekDay(day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN));
+                    weeklyDto.setComplianceType(getComplianceType(memberId, day));
+                    return weeklyDto;
+                }).collect(Collectors.toList());
+        headerDto.setWeekly(collect);
+        return headerDto;
+    }
+    
+    private HeaderDto getWeeklyHeader(Long memberId, LocalDate startDate, LocalDate endDate) {
+        HeaderDto headerDto = new HeaderDto();
+        headerDto.setMonth(startDate.getYear() + "년 " + startDate.getMonthValue() + "월");
+        
+        List<HeaderDto.WeeklyDto> weekly = startDate.datesUntil(endDate.plusDays(1))
+                .map(day -> {
+                    HeaderDto.WeeklyDto weeklyDto = new HeaderDto.WeeklyDto();
+                    weeklyDto.setDate(day.toString());
+                    weeklyDto.setWeekDay(day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN));
+                    weeklyDto.setComplianceType(getComplianceType(memberId, day));
+                    return weeklyDto;
+                }).collect(Collectors.toList());
+        headerDto.setWeekly(weekly);
+        return headerDto;
+    }
+    
+    private List<DailyDto> getDailyForWeek(Long memberId, LocalDate startDate, LocalDate endDate) {
+        List<DailyDto> dailyList = new ArrayList<>();
+        
+        for (LocalDate currentDate = startDate; !currentDate.isAfter(endDate); currentDate = currentDate.plusDays(1)) {
+            dailyList.add(getDaily(memberId, currentDate));
+        }
+        
+        return dailyList;
+    }
+    
+    private List<DailyDto> getDailyForMonth(Long memberId, YearMonth yearMonth) {
+        List<DailyDto> dailyList = new ArrayList<>();
+        
         LocalDate startDate = yearMonth.atDay(1);
         LocalDate endDate = yearMonth.atEndOfMonth();
         
-        // 해당 회원의 특정 기간에 해당하는 모든 낫 투두 리스트 항목을 조회
-        List<NotTodoList> notTodoLists = notTodoListRepository.findAllByMemberIdAndStartDateBeforeAndEndDateAfter(memberId, endDate, startDate);
-        
-        List<DailyComplianceDto> complianceList = new ArrayList<>();
-        
-        LocalDate currentDate = startDate;
-        // 월의 모든 날짜를 순회
-        while (!currentDate.isAfter(endDate)) {
-            int totalChecks = 0;
-            int compliantChecks = 0;
-            
-            // 모든 낫 투두 리스트 항목에 대해 현재 날짜에 대한 준수 여부를 확인
-            for (NotTodoList notTodoList : notTodoLists) {
-                // 현재 날짜가 낫 투두 리스트 항목의 기간에 포함되는지 확인
-                if (!notTodoList.getStartDate().isAfter(currentDate) && !notTodoList.getEndDate().isBefore(currentDate)) {
-                    Optional<NotTodoListCheck> check = notTodoListCheckRepository.findByNotTodoListIdAndCheckDate(notTodoList.getId(), currentDate);
-                    boolean isCompliant = check.map(NotTodoListCheck::isCompliant).orElse(false);
-                    
-                    totalChecks++;
-                    if (isCompliant) {
-                        compliantChecks++;
-                    }
-                }
-            }
-            
-            // 등록된 낫 투두 리스트 항목이 있는 경우에만 리스트에 추가
-            if (totalChecks > 0) {
-                int complianceRate = (int) Math.floor((double) compliantChecks / totalChecks * 100);
-                complianceList.add(new DailyComplianceDto(currentDate, complianceRate));
-            }
-            
-            currentDate = currentDate.plusDays(1);
+        for (LocalDate currentDate = startDate; !currentDate.isAfter(endDate); currentDate = currentDate.plusDays(1)) {
+            dailyList.add(getDaily(memberId, currentDate));
         }
         
-        return complianceList;
+        return dailyList;
+    }
+    
+    private DailyDto getDaily(Long memberId, LocalDate date) {
+        QNotTodoList qNotTodoList = QNotTodoList.notTodoList;
+        QNotTodoListCheck qNotTodoListCheck = QNotTodoListCheck.notTodoListCheck;
+        DailyDto dailyDto = new DailyDto();
+        dailyDto.setDate(date.toString());
+        
+        List<NotTodoList> notTodoLists = queryFactory
+                .selectFrom(qNotTodoList)
+                .where(qNotTodoList.member.id.eq(memberId)
+                        .and(qNotTodoList.startDate.loe(date))
+                        .and(qNotTodoList.endDate.goe(date)))
+                .fetch();
+        
+        // 가져온 NotTodoList 데이터를 기반으로 NotTodoListCheck 데이터를 조회
+        List<Long> notTodoListIds = notTodoLists.stream()
+                .map(NotTodoList::getId)
+                .collect(Collectors.toList());
+        
+        List<NotTodoListCheck> notTodoListChecks = queryFactory
+                .selectFrom(qNotTodoListCheck)
+                .where(qNotTodoListCheck.notTodoList.id.in(notTodoListIds)
+                        .and(qNotTodoListCheck.checkDate.eq(date)))
+                .fetch();
+        
+        List<DailyDto.TodoDto> todos = notTodoLists
+                .stream()
+                .map(notTodoList -> {
+                    DailyDto.TodoDto todoDto = new DailyDto.TodoDto();
+                    todoDto.setNotTodoListContent(notTodoList.getNotTodoListContent());
+                    todoDto.setCategoryId(notTodoList.getCategory().getId());
+                    boolean isCheck = notTodoListChecks.stream()
+                            .anyMatch(check -> check.getNotTodoList().getId().equals(notTodoList.getId())
+                                    && check.isCompliant()
+                            );
+                    todoDto.setChecked(isCheck);
+                    return todoDto;
+                }).collect(Collectors.toList());
+        
+        dailyDto.setTodos(todos);
+        return dailyDto;
+    }
+    
+    private String getComplianceType(Long memberId, LocalDate date) {
+        QNotTodoList qNotTodoList = QNotTodoList.notTodoList;
+        QNotTodoListCheck qNotTodoListCheck = QNotTodoListCheck.notTodoListCheck;
+        
+        // 해당 날짜의 총 NotTodo 개수
+        Long totalCount = queryFactory
+                .select(qNotTodoList.count())
+                .from(qNotTodoList)
+                .where(qNotTodoList.member.id.eq(memberId)
+                        .and(qNotTodoList.startDate.loe(date))
+                        .and(qNotTodoList.endDate.goe(date)))
+                .fetchOne();
+        
+        // 해당 날짜의 성공한 NotTodo 개수
+        Long successCount = queryFactory
+                .select(qNotTodoListCheck.count())
+                .from(qNotTodoListCheck)
+                .join(qNotTodoList).on(qNotTodoListCheck.notTodoList.id.eq(qNotTodoList.id))
+                .where(qNotTodoList.member.id.eq(memberId)
+                        .and(qNotTodoListCheck.checkDate.eq(date))
+                        .and(qNotTodoListCheck.isCompliant.isTrue()))
+                .fetchOne();
+        
+        // 성공률 계산 (Math.floor 사용하여 소수점 제거)
+        int rate = (totalCount == 0) ? 0 : (int) Math.floor((double) successCount / totalCount * 100);
+        
+      
+        
+        // complianceType 반환
+        if (totalCount == 0 || successCount == 0) {
+            return null;
+        } else if (rate == 100) {
+            return "good";
+        } else if (rate >= 50) {
+            return "fair";
+        } else {
+            return "poor";
+        }
     }
 }
+

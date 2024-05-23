@@ -88,6 +88,14 @@ public class NotTodoList extends BaseDate {
         this.category = category;
         category.getNotTodoLists().add(this);
     }
+    
+    /**
+     * EndDate를 수정
+     * @param updateDate
+     */
+    public void modifyEndDate(LocalDate updateDate) {
+        this.endDate = updateDate;
+    }
 }
 
 
