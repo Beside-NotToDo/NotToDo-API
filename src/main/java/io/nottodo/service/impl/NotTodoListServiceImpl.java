@@ -8,6 +8,7 @@ import io.nottodo.repository.CategoryRepository;
 import io.nottodo.repository.MemberRepository;
 import io.nottodo.repository.NotTodoListRepository;
 import io.nottodo.request.NotTodoListRequest;
+import io.nottodo.request.NotTodoListTemporaryStorageRequest;
 import io.nottodo.service.NotTodoListService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -40,7 +41,9 @@ public class NotTodoListServiceImpl implements NotTodoListService {
                 .from(notTodoList)
                 .leftJoin(notTodoList.member, member).fetchJoin()
                 .leftJoin(notTodoList.category, category).fetchJoin()
-                .where(member.id.eq(memberId))
+                .where(member.id.eq(memberId)
+                        .and(notTodoList.temporaryStorage.isFalse())
+                )
                 .fetch()
                 .stream()
                 .map(n -> new NotTodoListDto(
@@ -112,6 +115,22 @@ public class NotTodoListServiceImpl implements NotTodoListService {
                 .orElseThrow(() -> new IllegalArgumentException("Not Found Category"));
         notTodoList.setCategory(findCategory);
         
+        return notTodoList.getId();
+    }
+    
+    @Override
+    public Long modifyTemporaryStorageNotTodoList(Long id, NotTodoListTemporaryStorageRequest notTodoListTemporaryStorageRequest, Long memberId) {
+        NotTodoList notTodoList = notTodoListRepository.findByIdAndMemberId(id, memberId);
+        
+        if (notTodoList == null) {
+            throw new IllegalArgumentException("Not Found Todo");
+        }
+        
+        notTodoList.updateNotTodoTemporaryStorage(notTodoListTemporaryStorageRequest);
+        
+        Category findCategory = categoryRepository.findById(notTodoListTemporaryStorageRequest.getCategoryId())
+                .orElseThrow(() -> new IllegalArgumentException("Not Found Category"));
+        notTodoList.setCategory(findCategory);
         return notTodoList.getId();
     }
     

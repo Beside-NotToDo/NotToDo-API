@@ -9,8 +9,6 @@ import io.nottodo.entity.NotTodoList;
 import io.nottodo.entity.NotTodoListCheck;
 import io.nottodo.entity.QNotTodoList;
 import io.nottodo.entity.QNotTodoListCheck;
-import io.nottodo.repository.NotTodoListCheckRepository;
-import io.nottodo.repository.NotTodoListRepository;
 import io.nottodo.service.MonthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -172,8 +170,8 @@ public class MonthServiceImpl implements MonthService {
                 .select(qNotTodoList.count())
                 .from(qNotTodoList)
                 .where(qNotTodoList.member.id.eq(memberId)
-                        .and(qNotTodoList.startDate.loe(date))
-                        .and(qNotTodoList.endDate.goe(date)))
+                        .and(qNotTodoList.startDate.loe(date))   // 2024-5-23 <= 2024-5-23
+                        .and(qNotTodoList.endDate.goe(date))) // 2024-5-30 >= 2024-5-23
                 .fetchOne();
         
         // 해당 날짜의 성공한 NotTodo 개수

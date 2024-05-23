@@ -4,6 +4,7 @@ import io.nottodo.dto.day.DailyComplianceDto;
 import io.nottodo.dto.day.MonthDto;
 import io.nottodo.dto.day.WeekDto;
 import io.nottodo.jwt.JwtUtil;
+import io.nottodo.request.WeekDailyRequest;
 import io.nottodo.service.MonthService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -47,12 +48,11 @@ public class MonthController {
      * @param week  주차
      * @return WeekDto 주차 데이터
      */
-    @GetMapping("/weekly")
+    @PostMapping("/weekly")
     public WeekDto getWeekAndDaily(@AuthenticationPrincipal Jwt jwt,
-                                   @RequestParam Integer month,
-                                   @RequestParam Integer week) {
+                                   @RequestBody WeekDailyRequest weekDailyRequest) {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
-        return monthService.getWeekAndDaily(memberId, month, week);
+        return monthService.getWeekAndDaily(memberId, weekDailyRequest.getMonth(), weekDailyRequest.getWeek());
     }
     
     private LocalDate getStartOfWeek(YearMonth yearMonth, int week) {

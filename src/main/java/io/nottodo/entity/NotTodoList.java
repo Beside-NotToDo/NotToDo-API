@@ -1,6 +1,7 @@
 package io.nottodo.entity;
 
 
+import io.nottodo.request.NotTodoListTemporaryStorageRequest;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.ToString;
@@ -31,6 +32,10 @@ public class NotTodoList extends BaseDate {
     
     @Column(name = "END_DATE")
     private LocalDate endDate;
+    
+    @Comment(value = "삭제 여부")
+    @Column(name = "TEMPORARY_STORAGE")
+    private Boolean temporaryStorage;
     
     @ManyToOne(fetch = FetchType.LAZY)
     @Comment(value = "회원 기본키")
@@ -91,10 +96,18 @@ public class NotTodoList extends BaseDate {
     
     /**
      * EndDate를 수정
+     *
      * @param updateDate
      */
     public void modifyEndDate(LocalDate updateDate) {
         this.endDate = updateDate;
+    }
+    
+    public void updateNotTodoTemporaryStorage(NotTodoListTemporaryStorageRequest notTodoListTemporaryStorageRequest) {
+        this.notTodoListContent = notTodoListTemporaryStorageRequest.getNotTodoListContent();
+        this.startDate = notTodoListTemporaryStorageRequest.getStartDate();
+        this.endDate = notTodoListTemporaryStorageRequest.getEndDate();
+        this.temporaryStorage = notTodoListTemporaryStorageRequest.getTemporaryStorage();
     }
 }
 
