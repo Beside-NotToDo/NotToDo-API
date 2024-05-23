@@ -18,6 +18,7 @@ import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.YearMonth;
 import java.time.format.TextStyle;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
 import java.util.List;
@@ -154,6 +155,10 @@ public class MonthServiceImpl implements MonthService {
                                     && check.isCompliant()
                             );
                     todoDto.setChecked(isCheck);
+                    LocalDate currentDate = date; // 현재 날짜를 의미하는 변수
+                    long periodDays = ChronoUnit.DAYS.between(notTodoList.getStartDate(), currentDate);
+                    LocalDate periodDate = notTodoList.getStartDate().plusDays(periodDays);
+                    todoDto.setPeriod(periodDate); // Period 값을 설정
                     return todoDto;
                 }).collect(Collectors.toList());
         

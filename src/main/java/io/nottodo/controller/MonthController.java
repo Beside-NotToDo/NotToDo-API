@@ -54,38 +54,4 @@ public class MonthController {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
         return monthService.getWeekAndDaily(memberId, weekDailyRequest.getMonth(), weekDailyRequest.getWeek());
     }
-    
-    private LocalDate getStartOfWeek(YearMonth yearMonth, int week) {
-        LocalDate firstDayOfMonth = yearMonth.atDay(1);
-        LocalDate firstSunday = firstDayOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
-        
-        // 첫 주는 1일부터 시작
-        if (week == 0) {
-            return firstDayOfMonth;
-        }
-        
-        // 첫 주 이후는 일요일을 기준으로 계산
-        return firstSunday.plusWeeks(week);
-    }
-    
-    
-    private LocalDate getEndOfWeek(LocalDate startOfWeek, YearMonth yearMonth) {
-        LocalDate endOfWeek = startOfWeek.plusDays(6);
-        
-        // 주의 종료일이 요청된 월을 넘어가지 않도록 조정
-        if (startOfWeek.getMonthValue() != yearMonth.getMonthValue()) {
-            startOfWeek = yearMonth.atDay(1);
-        }
-        
-        if (endOfWeek.getMonthValue() != yearMonth.getMonthValue()) {
-            endOfWeek = yearMonth.atEndOfMonth();
-        }
-        
-        // 첫 주 거나 마지막째 주일 경우 시작일이 월의 첫 날 이후인 경우에만 종료일 조정
-//        if (yearMonth.atDay(1).getDayOfWeek() != DayOfWeek.SUNDAY && startOfWeek.isEqual(yearMonth.atDay(1))) {
-//            endOfWeek = yearMonth.atDay(1).with(TemporalAdjusters.nextOrSame(DayOfWeek.SATURDAY));
-//        } 잠시 주석
-        
-        return endOfWeek;
-    }
 }
