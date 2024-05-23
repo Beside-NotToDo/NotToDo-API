@@ -15,6 +15,6 @@ public class DailyDto {
         private String notTodoListContent;
         private boolean checked;
         private Long categoryId;
-        private LocalDate period;
+        private Long period;
     }
 }

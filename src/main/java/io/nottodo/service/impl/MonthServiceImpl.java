@@ -155,10 +155,10 @@ public class MonthServiceImpl implements MonthService {
                                     && check.isCompliant()
                             );
                     todoDto.setChecked(isCheck);
+                    // 현재 날짜를 의미하는 변수
                     LocalDate currentDate = date; // 현재 날짜를 의미하는 변수
                     long periodDays = ChronoUnit.DAYS.between(notTodoList.getStartDate(), currentDate);
-                    LocalDate periodDate = notTodoList.getStartDate().plusDays(periodDays);
-                    todoDto.setPeriod(periodDate); // Period 값을 설정
+                    todoDto.setPeriod(periodDays); // Period 값을 설정
                     return todoDto;
                 }).collect(Collectors.toList());
         
