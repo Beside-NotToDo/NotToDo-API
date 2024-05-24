@@ -44,8 +44,7 @@ public class MonthController {
     /**
      * 특정 연월과 주차의 데이터를 반환하는 엔드포인트.
      *
-     * @param month 월
-     * @param week  주차
+     * @param weekDailyRequest 연 월
      * @return WeekDto 주차 데이터
      */
     @PostMapping("/weekly")

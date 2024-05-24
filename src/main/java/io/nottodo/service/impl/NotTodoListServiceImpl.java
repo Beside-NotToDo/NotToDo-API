@@ -89,6 +89,35 @@ public class NotTodoListServiceImpl implements NotTodoListService {
         
     }
     
+    @Override
+    public List<NotTodoListDto> getAllNotTodoTemporaryStorage(Long memberId) {
+        QMember member = QMember.member;
+        QNotTodoList notTodoList = QNotTodoList.notTodoList;
+        QCategory category = QCategory.category;
+        return queryFactory
+                .select(notTodoList)
+                .from(notTodoList)
+                .leftJoin(notTodoList.member, member).fetchJoin()
+                .leftJoin(notTodoList.category, category).fetchJoin()
+                .where(member.id.eq(memberId)
+                        .and(notTodoList.temporaryStorage.isTrue())
+                )
+                .fetch()
+                .stream()
+                .map(n -> new NotTodoListDto(
+                        n.getId(),
+                        n.getNotTodoListContent(),
+                        n.getStartDate(),
+                        n.getEndDate(),
+                        n.getMember().getId(),
+                        n.getMember().getUsername(),
+                        n.getMember().getMemberName(),
+                        n.getCategory().getId(),
+                        n.getCategory().getCategoryName()
+                ))
+                .collect(Collectors.toList());
+    }
+    
     
     @Override
     public Long createNotTodoList(NotTodoListRequest request, Long memberId) {

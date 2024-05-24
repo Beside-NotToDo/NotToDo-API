@@ -13,6 +13,8 @@ public interface NotTodoListService {
      List<NotTodoListDto> getNotTodoList(Long memberId);
     
      NotTodoListDto getNotTodoList(Long id, Long memberId);
+    
+    List<NotTodoListDto> getAllNotTodoTemporaryStorage(Long memberId);
      
     // 작성
     Long createNotTodoList(NotTodoListRequest notTodoListRequest , Long memberId);

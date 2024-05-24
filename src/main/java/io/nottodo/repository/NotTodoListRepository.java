@@ -12,4 +12,6 @@ public interface NotTodoListRepository extends JpaRepository<NotTodoList,Long> {
     
     List<NotTodoList> findAllByMemberIdAndStartDateBeforeAndEndDateAfter(Long memberId, LocalDate endDate, LocalDate startDate);
     
+    List<NotTodoList> findAllByMemberIdAndCategoryId(Long memberId, Long categoryId);
+    List<NotTodoList> findAllByMemberId(Long memberId);
 }

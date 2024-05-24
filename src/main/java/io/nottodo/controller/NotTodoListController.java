@@ -40,6 +40,12 @@ public class NotTodoListController {
         return notTodoListService.getNotTodoList(id, memberId);
     }
     
+    @GetMapping("/temporaryStorage")
+    public List<NotTodoListDto> getAllNotTodoTemporaryStorage(@AuthenticationPrincipal Jwt jwt) {
+        Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
+        return notTodoListService.getAllNotTodoTemporaryStorage(memberId);
+    }
+    
     //작성
     @PostMapping("")
     public Long createNotTodoList(@Validated @RequestBody NotTodoListRequest notTodoListRequest, @AuthenticationPrincipal Jwt jwt) {
@@ -72,15 +78,14 @@ public class NotTodoListController {
         return notTodoListService.modifyTemporaryStorageNotTodoList(id, notTodoListTemporaryStorageRequest, memberId);
     }
     
-    
-    
-    
     // 삭제
     @DeleteMapping("/{id}")
     public Long deleteNotTodoList(@PathVariable("id") Long id, @AuthenticationPrincipal Jwt jwt) {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
         return notTodoListService.deleteNotTodoList(id, memberId);
     }
+    
+    
     
     
 }
