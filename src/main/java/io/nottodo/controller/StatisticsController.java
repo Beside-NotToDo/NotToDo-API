@@ -1,5 +1,6 @@
 package io.nottodo.controller;
 
+import io.nottodo.dto.CategoryAverageScoreDto;
 import io.nottodo.dto.NotTodoListWithChecksDto;
 import io.nottodo.dto.OverallStatisticsDto;
 import io.nottodo.dto.ThemeStatisticsDto;
@@ -14,6 +15,7 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/statistics")
@@ -42,31 +44,17 @@ public class StatisticsController {
     }
     
     /**
-     * 전체 통계 정보를 조회합니다.
+     * 사용자별 카테고리별 평균 점수 조회
      *
      * @param jwt 사용자의 인증 정보를 포함하는 JWT 토큰
-     * @return 전체 통계 정보
+     * @return 카테고리별 평균 점수
      */
-    @PostMapping("/overall")
-    public ResponseEntity<OverallStatisticsDto> getOverallStatistics(@AuthenticationPrincipal Jwt jwt) {
+    @GetMapping("/category/averages")
+    public ResponseEntity<List<CategoryAverageScoreDto>> getCategoryAverageScoresByUser(@AuthenticationPrincipal Jwt jwt) {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
-        OverallStatisticsDto overallStatistics = statisticsService.getOverallStatistics(memberId);
-        return ResponseEntity.ok(overallStatistics);
+        return ResponseEntity.ok(statisticsService.getCategoryAverageScores(memberId));
     }
-    
-    /**
-     * 카테고리별 낫 투두 리스트 및 체크 정보 조회
-     *
-     * @param jwt 사용자의 인증 정보를 포함하는 JWT 토큰
-     * @param request 카테고리 ID 및 필요한 정보를 포함하는 요청 객체
-     * @return 낫 투두 리스트 및 체크 정보
-     */
-    @PostMapping("/category/lists")
-    public ResponseEntity<List<NotTodoListWithChecksDto>> getNotTodoListsByCategoryWithChecks(@AuthenticationPrincipal Jwt jwt,
-                                                                                              @RequestBody ThemeStatisticsRequest request) {
-        Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
-        List<NotTodoListWithChecksDto> notTodoLists = statisticsService.getNotTodoListsByCategoryWithChecks(memberId, request.getCategoryId());
-        return ResponseEntity.ok(notTodoLists);
-    }
+ 
 }
+
 

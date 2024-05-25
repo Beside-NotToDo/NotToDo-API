@@ -13,9 +13,8 @@ import java.time.LocalDateTime;
 @NoArgsConstructor
 public class NotTodoListCheckDto {
     
-    
     private Long checkId;
-    private Long notTodoListId; // NotTodoList의 ID만 저장
+    private Long notTodoListId;
     private LocalDate checkDate;
     private String notTodoListContent;
     private boolean compliant;

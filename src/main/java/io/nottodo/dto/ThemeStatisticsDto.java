@@ -16,7 +16,8 @@ public class ThemeStatisticsDto {
     private double averageScore;
     private LocalDate startDate;
     private LocalDate endDate;
-    private List<NotTodoListContentDto> contents;
+    //private List<NotTodoListContentDto> contents;
     private List<String> excludeFromCounting; // 제외된 항목
     private List<String> reason; // 제외된 이유
+    private List<NotTodoListWithChecksDto> contents;
 }

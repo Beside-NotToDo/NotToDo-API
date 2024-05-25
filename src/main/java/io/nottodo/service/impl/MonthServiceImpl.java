@@ -192,7 +192,7 @@ public class MonthServiceImpl implements MonthService {
       
         
         // complianceType 반환
-        if (totalCount == 0 || successCount == 0) {
+        if (totalCount == 0 ) {
             return null;
         } else if (rate == 100) {
             return "good";

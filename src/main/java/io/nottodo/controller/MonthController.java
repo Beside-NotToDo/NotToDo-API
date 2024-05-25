@@ -51,6 +51,6 @@ public class MonthController {
     public WeekDto getWeekAndDaily(@AuthenticationPrincipal Jwt jwt,
                                    @RequestBody WeekDailyRequest weekDailyRequest) {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
-        return monthService.getWeekAndDaily(memberId, weekDailyRequest.getMonth(), weekDailyRequest.getWeek());
+        return monthService.getWeekAndDaily(memberId, weekDailyRequest.getMonth(), weekDailyRequest.getWeek() -1);
     }
 }
