@@ -12,7 +12,9 @@ public class DailyDto {
     
     @Data
     public static class TodoDto {
+        private Long notTodoListId;
         private String notTodoListContent;
+        private Long checkId;
         private boolean checked;
         private Long categoryId;
         private Long period;

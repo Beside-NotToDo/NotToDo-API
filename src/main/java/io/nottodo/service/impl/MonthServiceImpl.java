@@ -150,18 +150,35 @@ public class MonthServiceImpl implements MonthService {
                         .and(qNotTodoListCheck.checkDate.eq(date)))
                 .fetch();
         
-        List<DailyDto.TodoDto> todos = notTodoLists
-                .stream()
+        List<DailyDto.TodoDto> todos = notTodoLists.stream()
                 .map(notTodoList -> {
                     DailyDto.TodoDto todoDto = new DailyDto.TodoDto();
+                    todoDto.setNotTodoListId(notTodoList.getId());
+                    
+                    // notTodoListId에 해당하는 checkId 가져오기
+                    List<Long> checkIds = notTodoListChecks.stream()
+                            .filter(c -> c.getNotTodoList().getId().equals(notTodoList.getId()))
+                            .map(NotTodoListCheck::getCheckId)
+                            .collect(Collectors.toList());
+                    
+                    // checkId가 존재하는 경우 첫 번째 checkId를 설정
+                    if (!checkIds.isEmpty()) {
+                        todoDto.setCheckId(checkIds.get(0));
+                    } else {
+                        todoDto.setCheckId(null); // checkId가 없는 경우 null로 설정
+                    }
+                    
                     todoDto.setNotTodoListContent(notTodoList.getNotTodoListContent());
                     todoDto.setCategoryId(notTodoList.getCategory().getId());
+                    
                     boolean isCheck = notTodoListChecks.stream()
                             .anyMatch(check -> check.getNotTodoList().getId().equals(notTodoList.getId())
                                     && check.isCompliant()
                             );
+                    
                     todoDto.setChecked(isCheck);
                     todoDto.setPeriod(ChronoUnit.DAYS.between(notTodoList.getStartDate(), date) + 1);
+                    
                     return todoDto;
                 }).collect(Collectors.toList());
         
