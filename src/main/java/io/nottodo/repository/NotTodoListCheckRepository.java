@@ -8,11 +8,10 @@ import java.util.List;
 import java.util.Optional;
 
 public interface NotTodoListCheckRepository extends JpaRepository<NotTodoListCheck, Long> {
-    Optional<NotTodoListCheck> findByNotTodoListIdAndCheckDate(Long notTodoListId, LocalDate checkDate);
-    
-    List<NotTodoListCheck> findAllByNotTodoListIdInAndIsCompliantTrue(List<Long> notTodoListIds);
-    List<NotTodoListCheck> findAllByNotTodoListId(Long notTodoListId);
+
     List<NotTodoListCheck> findAllByNotTodoListIdIn(List<Long> notTodoListIds);
     
     long countByNotTodoListIdAndIsCompliantTrue(Long notTodoListId);
+    
+    void deleteAllByNotTodoListIdIn(List<Long> notTodoListIds);
 }

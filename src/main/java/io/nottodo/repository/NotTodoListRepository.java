@@ -9,9 +9,8 @@ import java.util.List;
 public interface NotTodoListRepository extends JpaRepository<NotTodoList,Long> {
     
     NotTodoList findByIdAndMemberId(Long id, Long memberId);
-    
-    List<NotTodoList> findAllByMemberIdAndStartDateBeforeAndEndDateAfter(Long memberId, LocalDate endDate, LocalDate startDate);
-    
     List<NotTodoList> findAllByMemberIdAndCategoryId(Long memberId, Long categoryId);
     List<NotTodoList> findAllByMemberId(Long memberId);
+    void deleteAllByMemberId(Long memberId);
+    
 }

@@ -28,7 +28,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 public class MonthServiceImpl implements MonthService {
-
+    
     private final JPAQueryFactory queryFactory;
     
     @Override
@@ -56,7 +56,6 @@ public class MonthServiceImpl implements MonthService {
     private LocalDate getStartOfWeek(YearMonth yearMonth, int week) {
         LocalDate firstDayOfMonth = yearMonth.atDay(1);
         LocalDate firstSunday = firstDayOfMonth.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
-        
         return firstSunday.plusWeeks(week);
     }
     
@@ -74,7 +73,11 @@ public class MonthServiceImpl implements MonthService {
                     HeaderDto.WeeklyDto weeklyDto = new HeaderDto.WeeklyDto();
                     weeklyDto.setDate(day.toString());
                     weeklyDto.setWeekDay(day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN));
-                    weeklyDto.setComplianceType(getComplianceType(memberId, day));
+                    if (day.isAfter(LocalDate.now())) {
+                        weeklyDto.setComplianceType(null);
+                    } else {
+                        weeklyDto.setComplianceType(getComplianceType(memberId, day));
+                    }
                     return weeklyDto;
                 }).collect(Collectors.toList());
         headerDto.setWeekly(collect);
@@ -90,7 +93,11 @@ public class MonthServiceImpl implements MonthService {
                     HeaderDto.WeeklyDto weeklyDto = new HeaderDto.WeeklyDto();
                     weeklyDto.setDate(day.toString());
                     weeklyDto.setWeekDay(day.getDayOfWeek().getDisplayName(TextStyle.SHORT, Locale.KOREAN));
-                    weeklyDto.setComplianceType(getComplianceType(memberId, day));
+                    if (day.isAfter(LocalDate.now())) {
+                        weeklyDto.setComplianceType(null);
+                    } else {
+                        weeklyDto.setComplianceType(getComplianceType(memberId, day));
+                    }
                     return weeklyDto;
                 }).collect(Collectors.toList());
         headerDto.setWeekly(weekly);
@@ -133,7 +140,6 @@ public class MonthServiceImpl implements MonthService {
                         .and(qNotTodoList.endDate.goe(date)))
                 .fetch();
         
-        // 가져온 NotTodoList 데이터를 기반으로 NotTodoListCheck 데이터를 조회
         List<Long> notTodoListIds = notTodoLists.stream()
                 .map(NotTodoList::getId)
                 .collect(Collectors.toList());
@@ -167,16 +173,18 @@ public class MonthServiceImpl implements MonthService {
         QNotTodoList qNotTodoList = QNotTodoList.notTodoList;
         QNotTodoListCheck qNotTodoListCheck = QNotTodoListCheck.notTodoListCheck;
         
-        // 해당 날짜의 총 NotTodo 개수
+        if (date.isAfter(LocalDate.now())) {
+            return null;
+        }
+        
         Long totalCount = queryFactory
                 .select(qNotTodoList.count())
                 .from(qNotTodoList)
                 .where(qNotTodoList.member.id.eq(memberId)
-                        .and(qNotTodoList.startDate.loe(date))   // 2024-5-23 <= 2024-5-23
-                        .and(qNotTodoList.endDate.goe(date))) // 2024-5-30 >= 2024-5-23
+                        .and(qNotTodoList.startDate.loe(date))
+                        .and(qNotTodoList.endDate.goe(date)))
                 .fetchOne();
         
-        // 해당 날짜의 성공한 NotTodo 개수
         Long successCount = queryFactory
                 .select(qNotTodoListCheck.count())
                 .from(qNotTodoListCheck)
@@ -186,13 +194,9 @@ public class MonthServiceImpl implements MonthService {
                         .and(qNotTodoListCheck.isCompliant.isTrue()))
                 .fetchOne();
         
-        // 성공률 계산 (Math.floor 사용하여 소수점 제거)
         int rate = (totalCount == 0) ? 0 : (int) Math.floor((double) successCount / totalCount * 100);
         
-      
-        
-        // complianceType 반환
-        if (totalCount == 0 ) {
+        if (totalCount == 0) {
             return null;
         } else if (rate == 100) {
             return "good";
@@ -203,4 +207,3 @@ public class MonthServiceImpl implements MonthService {
         }
     }
 }
-

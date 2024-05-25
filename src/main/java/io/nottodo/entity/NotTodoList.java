@@ -48,7 +48,7 @@ public class NotTodoList extends BaseDate {
     private Category category;
     
     
-    @OneToMany(mappedBy = "notTodoList")
+    @OneToMany(mappedBy = "notTodoList" , cascade = CascadeType.REMOVE,orphanRemoval = true)
     @ToString.Exclude
     private List<NotTodoListCheck> notTodoListCheck = new ArrayList<>();
     

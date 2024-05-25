@@ -55,11 +55,11 @@ public class Member {
     private LocalDateTime updateDate;
     
     
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE,orphanRemoval = true)
     @ToString.Exclude
     private List<MemberRole> memberRoles = new ArrayList<>();
     
-    @OneToMany(mappedBy = "member")
+    @OneToMany(mappedBy = "member",cascade = CascadeType.REMOVE,orphanRemoval = true)
     @ToString.Exclude
     private List<NotTodoList> notTodoLists = new ArrayList<>();
     
