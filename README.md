@@ -122,9 +122,19 @@
                 "date": "2024-05-01",
                 "todos": [
                     {
+                        "notTodoListId": 2,
                         "notTodoListContent": "예제 내용2",
+                        "checkId": null,
                         "checked": false,
                         "categoryId": 2,
+                        "period": 1
+                    },
+                    {
+                        "notTodoListId": 3,
+                        "notTodoListContent": "예제테스트",
+                        "checkId": null,
+                        "checked": false,
+                        "categoryId": 1,
                         "period": 1
                     },
                     ...
