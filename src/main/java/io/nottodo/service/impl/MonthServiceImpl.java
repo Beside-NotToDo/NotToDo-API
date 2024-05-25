@@ -165,7 +165,7 @@ public class MonthServiceImpl implements MonthService {
                     if (!checkIds.isEmpty()) {
                         todoDto.setCheckId(checkIds.get(0));
                     } else {
-                        todoDto.setCheckId(null); // checkId가 없는 경우 null로 설정
+                        todoDto.setCheckId(0L); // checkId가 없는 경우 0로 설정
                     }
                     
                     todoDto.setNotTodoListContent(notTodoList.getNotTodoListContent());
