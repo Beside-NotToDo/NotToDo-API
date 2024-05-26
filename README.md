@@ -1,3 +1,48 @@
+# NotTodo (삼투압)
+![표지](https://thrilling-saffron-3af.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F291300ad-a4db-4a27-9fab-4f2a7df0e312%2Fe67d4d9e-3c63-40e1-b98b-4c25769e5c90%2F%25EC%2584%259C%25EB%25B9%2584%25EC%258A%25A4_%25EC%2586%258C%25EA%25B0%259C%25EC%2584%259C_-1.png?table=block&id=b28e8681-dc4f-486c-a03b-5ae894ef816a&spaceId=291300ad-a4db-4a27-9fab-4f2a7df0e312&width=2000&userId=&cache=v2)
+<br><br>
+
+### Overview
+저희 서비스의 이름은 '삼 주간 투두 압수'를 줄인 말인 데요.
+하루마다 적어 지켜가는 투 두 리스트도 좋지만 시간이 지남에 따라 지키지 못하는 항목이 늘어가면서 스트레 스도같이 늘어나지 않으셨나요?
+저희는 반대로 해야 할 일이 아니라 하지 말아야 할 일에 집중하고 실천할 수 있도록 서비스를 기획했어요.
+방해받는 요소를 제거하고, 나쁜 습관을 고칠 수 있도 록 도움을 주면서 집중력을 높여주고 시간 관리를 잘할 수 있도록 도움을 주는 서비스를 목표로 만들게 되었습니다.
+<br>
+### PROJECT GOAL
+사용자의 고치고 싶은 습관 챌린지 환경 마련
+
+## 💻 Tech Stack
+ - Java : 17
+ - Spring Boot : 3.25
+ - Spring Security 6
+ - Spring Data Jpa
+ - Query Dsl
+ - Gradle
+ - Database : Maria DB
+
+## 💻 Server 구성
+- NCP(Naver Cloud Platform)
+- Ubuntu Server 18.04 
+- Nginx 
+- Apache Tomcat
+
+## 📝 주요 기능
+- 카카오 로그인, 애플 로그인
+- NotToDo 등록 수정 삭제 조회 
+- 사용자 주간 및 월간 기록 통계 조회 
+- 푸시 알림 (구현 예정)
+<br>
+
+![앱화면1](https://thrilling-saffron-3af.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F291300ad-a4db-4a27-9fab-4f2a7df0e312%2F45e67884-747c-4279-a6a8-95495a4c1465%2F%25ED%2599%2594%25EB%25A9%25B4_-_2.png?table=block&id=fefa3971-9413-47e6-97e0-5e00773df942&spaceId=291300ad-a4db-4a27-9fab-4f2a7df0e312&width=2000&userId=&cache=v2)
+![앱화면2](https://thrilling-saffron-3af.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F291300ad-a4db-4a27-9fab-4f2a7df0e312%2Fc57a9166-bc3f-46a0-bae1-5c9adb0db76a%2F%25ED%2599%2594%25EB%25A9%25B4_-_3.png?table=block&id=e2474c38-454e-4bc2-bd0f-a49515bd183c&spaceId=291300ad-a4db-4a27-9fab-4f2a7df0e312&width=2000&userId=&cache=v2)
+![개발예정](https://thrilling-saffron-3af.notion.site/image/https%3A%2F%2Fprod-files-secure.s3.us-west-2.amazonaws.com%2F291300ad-a4db-4a27-9fab-4f2a7df0e312%2F8d687c1b-a8dc-42f8-8dd5-55ebd2aaee97%2F%25ED%2599%2594%25EB%25A9%25B4_-_4.png?table=block&id=e2c1ee5b-48f9-4267-b1a3-39ac9d713d58&spaceId=291300ad-a4db-4a27-9fab-4f2a7df0e312&width=2000&userId=&cache=v2)
+
+## 앱 시연 영상 Link
+- [IOS Repository](https://github.com/Beside-NotToDo/NotToDo-iOS)
+- [App store] - 추후 앱 스토어 배포 예정
+<br>
+![시연 영상](https://www.notion.so/iOS-0f9784d5646e432cad27d8e9e7a3df45?pvs=4#a31c73f0766547a9832e7442b1020013)
+
 # NotToDo API
 
 ## MemberController
