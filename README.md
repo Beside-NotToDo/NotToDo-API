@@ -41,7 +41,7 @@
 - [IOS Repository](https://github.com/Beside-NotToDo/NotToDo-iOS)
 - [App store] - 추후 앱 스토어 배포 예정
 <br>
-![시연 영상](https://www.notion.so/iOS-0f9784d5646e432cad27d8e9e7a3df45?pvs=4#a31c73f0766547a9832e7442b1020013)
+[![시연 영상](https://img.youtube.com/vi/VIDEO_ID/0.jpg)](https://www.youtube.com/watch?v=VIDEO_ID)
 
 # NotToDo API
 
