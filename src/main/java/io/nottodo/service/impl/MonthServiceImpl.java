@@ -137,7 +137,9 @@ public class MonthServiceImpl implements MonthService {
                 .selectFrom(qNotTodoList)
                 .where(qNotTodoList.member.id.eq(memberId)
                         .and(qNotTodoList.startDate.loe(date))
-                        .and(qNotTodoList.endDate.goe(date)))
+                        .and(qNotTodoList.endDate.goe(date))
+                        .and(qNotTodoList.temporaryStorage.isFalse())
+                )
                 .fetch();
         
         List<Long> notTodoListIds = notTodoLists.stream()
@@ -199,7 +201,9 @@ public class MonthServiceImpl implements MonthService {
                 .from(qNotTodoList)
                 .where(qNotTodoList.member.id.eq(memberId)
                         .and(qNotTodoList.startDate.loe(date))
-                        .and(qNotTodoList.endDate.goe(date)))
+                        .and(qNotTodoList.endDate.goe(date))
+                        .and(qNotTodoList.temporaryStorage.isFalse())
+                )
                 .fetchOne();
         
         Long successCount = queryFactory
