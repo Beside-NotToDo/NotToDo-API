@@ -148,7 +148,7 @@ public class NotTodoListServiceImpl implements NotTodoListService {
     }
     
     @Override
-    public Long modifyTemporaryStorageNotTodoList(Long id, NotTodoListTemporaryStorageRequest notTodoListTemporaryStorageRequest, Long memberId) {
+    public NotTodoList modifyTemporaryStorageNotTodoList(Long id, NotTodoListTemporaryStorageRequest notTodoListTemporaryStorageRequest, Long memberId) {
         NotTodoList notTodoList = notTodoListRepository.findByIdAndMemberId(id, memberId);
         
         if (notTodoList == null) {
@@ -160,7 +160,7 @@ public class NotTodoListServiceImpl implements NotTodoListService {
         Category findCategory = categoryRepository.findById(notTodoListTemporaryStorageRequest.getCategoryId())
                 .orElseThrow(() -> new IllegalArgumentException("Not Found Category"));
         notTodoList.setCategory(findCategory);
-        return notTodoList.getId();
+        return notTodoList;
     }
     
     @Override

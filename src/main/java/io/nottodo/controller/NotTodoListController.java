@@ -2,6 +2,7 @@ package io.nottodo.controller;
 
 
 import io.nottodo.dto.NotTodoListDto;
+import io.nottodo.entity.NotTodoList;
 import io.nottodo.exception.InvalidDateRangeException;
 import io.nottodo.jwt.JwtUtil;
 import io.nottodo.request.NotTodoListRequest;
@@ -69,12 +70,8 @@ public class NotTodoListController {
     }
     
     @PatchMapping("/temporaryStorage/{id}")
-    public Long updateTemporaryStorageNotTodoList(@PathVariable("id") Long id, @Validated @RequestBody NotTodoListTemporaryStorageRequest notTodoListTemporaryStorageRequest, @AuthenticationPrincipal Jwt jwt) {
+    public NotTodoList updateTemporaryStorageNotTodoList(@PathVariable("id") Long id, @Validated @RequestBody NotTodoListTemporaryStorageRequest notTodoListTemporaryStorageRequest, @AuthenticationPrincipal Jwt jwt) {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
-        
-        if (notTodoListTemporaryStorageRequest.getEndDate().isBefore(notTodoListTemporaryStorageRequest.getStartDate())) {
-            throw new InvalidDateRangeException("종료 날짜는 시작 날짜보다 이후여야 합니다");
-        }
         return notTodoListService.modifyTemporaryStorageNotTodoList(id, notTodoListTemporaryStorageRequest, memberId);
     }
     

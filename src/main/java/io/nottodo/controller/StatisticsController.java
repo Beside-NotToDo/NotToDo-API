@@ -1,8 +1,6 @@
 package io.nottodo.controller;
 
 import io.nottodo.dto.CategoryAverageScoreDto;
-import io.nottodo.dto.NotTodoListWithChecksDto;
-import io.nottodo.dto.OverallStatisticsDto;
 import io.nottodo.dto.ThemeStatisticsDto;
 import io.nottodo.jwt.JwtUtil;
 import io.nottodo.request.ThemeStatisticsRequest;
@@ -15,7 +13,6 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/statistics")

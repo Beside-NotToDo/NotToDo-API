@@ -1,6 +1,7 @@
 package io.nottodo.service;
 
 import io.nottodo.dto.NotTodoListDto;
+import io.nottodo.entity.NotTodoList;
 import io.nottodo.request.NotTodoListRequest;
 import io.nottodo.request.NotTodoListTemporaryStorageRequest;
 
@@ -22,7 +23,7 @@ public interface NotTodoListService {
     // 수정
     Long modifyNotTodoList(Long id,  NotTodoListRequest notTodoListRequest, Long memberId);
     
-    Long modifyTemporaryStorageNotTodoList(Long id, NotTodoListTemporaryStorageRequest notTodoListTemporaryStorageRequest, Long memberId);
+    NotTodoList modifyTemporaryStorageNotTodoList(Long id, NotTodoListTemporaryStorageRequest notTodoListTemporaryStorageRequest, Long memberId);
     
     // 삭제
     

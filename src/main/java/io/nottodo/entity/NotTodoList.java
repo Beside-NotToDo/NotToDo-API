@@ -105,8 +105,6 @@ public class NotTodoList extends BaseDate {
     
     public void updateNotTodoTemporaryStorage(NotTodoListTemporaryStorageRequest notTodoListTemporaryStorageRequest) {
         this.notTodoListContent = notTodoListTemporaryStorageRequest.getNotTodoListContent();
-        this.startDate = notTodoListTemporaryStorageRequest.getStartDate();
-        this.endDate = notTodoListTemporaryStorageRequest.getEndDate();
         this.temporaryStorage = notTodoListTemporaryStorageRequest.getTemporaryStorage();
     }
 }
