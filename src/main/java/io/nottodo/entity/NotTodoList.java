@@ -107,6 +107,13 @@ public class NotTodoList extends BaseDate {
         this.notTodoListContent = notTodoListTemporaryStorageRequest.getNotTodoListContent();
         this.temporaryStorage = notTodoListTemporaryStorageRequest.getTemporaryStorage();
     }
+    
+    @PrePersist
+    public void onTemporaryStorage() {
+        if (this.temporaryStorage == null) {
+            this.temporaryStorage = false; // 임시삭제 여부 false
+        }
+    }
 }
 
 
