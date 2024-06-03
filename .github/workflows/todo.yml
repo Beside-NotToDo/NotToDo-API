@@ -65,7 +65,7 @@ jobs:
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           source: project.jar
-          target: /root/NotToDo-API
+          target: /root/NotToDo-API/tobe
 
       - name: SSH로 접속하기
         uses: appleboy/ssh-action@v1.0.3
