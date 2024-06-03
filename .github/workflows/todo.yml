@@ -25,15 +25,18 @@ jobs:
           host port: 3306
           container port: 3306
           mysql database: 'nottodo'
+          mysql root password: 1234
           mysql user: 'todo'
           mysql password: ${{ secrets.DB_PASSWORD }}
 
       - name: application properties 파일 만들기
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
 
+
       - name: MariaDB 권한 설정
         run: |
-            docker exec $(docker ps -qf "name=mariadb") mysql -uroot -p${{ secrets.ROOT_PASSWORD }} -e "GRANT ALL PRIVILEGES ON nottodo.* TO 'todo'@'%' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}'; FLUSH PRIVILEGES;"
+          container_id=$(docker ps -qf "ancestor=mariadb:10.4.10")
+          docker exec $container_id mysql -uroot -p1234 -e "GRANT ALL PRIVILEGES ON nottodo.* TO 'todo'@'%' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}'; FLUSH PRIVILEGES;"
 
       - name: gradle 권한 추가
         run: chmod +x gradlew
