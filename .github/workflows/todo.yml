@@ -25,7 +25,7 @@ jobs:
           MYSQL_USER: todo
           MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
         ports:
-          - 3306:3306
+          - 3307:3306
 
     steps:
       - name: GitHub Repository에 올린 파일들 불러오기
