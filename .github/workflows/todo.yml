@@ -25,7 +25,7 @@ jobs:
           MYSQL_USER: todo
           MYSQL_PASSWORD: ${{ secrets.DB_PASSWORD }}
         ports:
-          - 3307:3306
+          - 3306:3306
 
     steps:
       - name: GitHub Repository에 올린 파일들 불러오기
@@ -60,8 +60,8 @@ jobs:
         uses: appleboy/scp-action@v0.1.7
         with:
           host: ${{ secrets.HOST }}
-          username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
+         # username: ${{ secrets.USERNAME }}
+         # password: ${{ secrets.PASSWORD }}
           port: ${{ secrets.PORT }}
           source: project.jar
           target: /root/NotToDo-API
@@ -70,8 +70,8 @@ jobs:
         uses: appleboy/ssh-action@v1.0.3
         with:
             host: ${{ secrets.HOST }}
-            username: ${{ secrets.USERNAME }}
-            password: ${{ secrets.PASSWORD }}
+        #    username: ${{ secrets.USERNAME }}
+        #    password: ${{ secrets.PASSWORD }}
             port: ${{ secrets.PORT }}
             envs: APPLICATION_PROPERTIES
             script_stop: true
