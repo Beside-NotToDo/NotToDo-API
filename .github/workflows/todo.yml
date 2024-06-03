@@ -51,7 +51,7 @@ jobs:
         run: chmod +x gradlew
 
       - name: gradle 빌드
-        run: ./gradlew clean --stacktrace --info build
+        run: ./gradlew clean build
 
       - name: 빌드된 파일 이름 변경
         run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
@@ -61,7 +61,6 @@ jobs:
         with:
           host: ${{ secrets.HOST }}
           username: ${{ secrets.USERNAME }}
-          password: ${{ secrets.PASSWORD }}
           key: ${{ secrets.KEY }}
           port: ${{ secrets.PORT }}
           source: project.jar
@@ -72,7 +71,6 @@ jobs:
         with:
             host: ${{ secrets.HOST }}
             username: ${{ secrets.USERNAME }}
-            password: ${{ secrets.PASSWORD }}
             key: ${{ secrets.KEY }}
             port: ${{ secrets.PORT }}
             envs: APPLICATION_PROPERTIES
