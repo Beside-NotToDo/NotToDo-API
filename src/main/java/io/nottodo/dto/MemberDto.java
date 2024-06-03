@@ -26,9 +26,6 @@ public class MemberDto {
     private LocalDateTime updateDate;
     private List<String> memberRoles;
     
-    
-    private String kakaoAccessToken; // 카카오 토큰
-    
     public static MemberDto createMemberDto(Member member) {
         MemberDto memberDto = new MemberDto();
         memberDto.id = member.getId();
