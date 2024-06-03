@@ -37,15 +37,6 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
 
-      - name: 마리아 DB 설정
-        uses: getong/mariadb-action@v1.1
-        with:
-          host port: 3306
-          container port: 3306
-          mysql database: 'nottodo'
-          mysql root password: 1234
-          mysql user: 'todo'
-          mysql password: ${{ secrets.DB_PASSWORD }}
 
       - name: application properties 파일 만들기
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
