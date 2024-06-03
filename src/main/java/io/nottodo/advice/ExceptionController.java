@@ -27,6 +27,7 @@ public class ExceptionController {
         List<FieldError> fieldErrors = bindingResult.getFieldErrors();
         
         
+        
         ErrorResponse errorResponse = new ErrorResponse(String.valueOf(HttpStatus.BAD_REQUEST.value()), "잘못된 요청입니다.");
         
         fieldErrors.forEach(err -> errorResponse.addValidation(err.getField(), err.getDefaultMessage()));
