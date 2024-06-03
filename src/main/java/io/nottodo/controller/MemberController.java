@@ -1,7 +1,7 @@
 package io.nottodo.controller;
 
 
-import io.nottodo.entity.Member;
+import io.nottodo.dto.MemberDto;
 import io.nottodo.jwt.JwtUtil;
 import io.nottodo.service.MemberService;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +23,7 @@ public class MemberController {
     private final JwtUtil jwtUtil;
     
     @GetMapping("/delete")
-    public Member test(@AuthenticationPrincipal Jwt jwt) {
+    public MemberDto test(@AuthenticationPrincipal Jwt jwt) {
         Long memberId = Long.valueOf(jwtUtil.extractClaim(jwt, "id"));
         return memberService.deleteMember(memberId);
     }

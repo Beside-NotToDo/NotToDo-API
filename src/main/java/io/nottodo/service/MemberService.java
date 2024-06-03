@@ -8,5 +8,5 @@ public interface MemberService {
     
     Member createMember(Member member);
     
-    Member deleteMember(Long memberId);
+    MemberDto deleteMember(Long memberId);
 }

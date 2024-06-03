@@ -39,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
     }
     
     @Override
-    public Member deleteMember(Long memberId) {
+    public MemberDto deleteMember(Long memberId) {
         // 삭제하기 전에 회원 정보 가져오기
         Member member = memberRepository.findById(memberId)
                 .orElseThrow(() -> new NoSuchElementException("Member not found with id: " + memberId));
@@ -62,7 +62,10 @@ public class MemberServiceImpl implements MemberService {
         // 4. 회원 삭제
         memberRepository.deleteById(memberId);
         
+        List<String> role = member.getMemberRoles()
+                .stream().map(r -> r.getRole().getRoleName()).collect(Collectors.toList());
+        
         // 삭제된 회원 정보 반환
-        return member;
+        return MemberDto.createMemberDto(member);
     }
 }
