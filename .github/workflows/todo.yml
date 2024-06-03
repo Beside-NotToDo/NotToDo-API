@@ -78,6 +78,7 @@ jobs:
             envs: APPLICATION_PROPERTIES
             script_stop: true
             script: |
+              sudo systemctl restart mariadb
               mysql -u root -p'${{ secrets.DB_ROOT_PASSWORD }}' -e "CREATE DATABASE IF NOT EXISTS nottodo;"
               if [ $? -ne 0 ]; then
                 mysql -u root -p'${{ secrets.DB_ROOT_PASSWORD }}' nottodo < /root/nottodo.sql
