@@ -35,6 +35,7 @@ public class ExceptionController {
     }
     
     
+    
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ExceptionHandler(InvalidDateRangeException.class)
     public ErrorResponse handleInvalidDateRangeException(InvalidDateRangeException e) {
