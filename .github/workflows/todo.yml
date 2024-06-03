@@ -19,15 +19,13 @@ jobs:
           distribution: 'corretto'
           java-version: '17'
 
-      - name: MariaDB 설치 및 설정
-        run: |
-            sudo apt-get update
-            sudo apt-get install -y mariadb-server
-            sudo systemctl start mariadb
-            sudo mysql -e "CREATE DATABASE IF NOT EXISTS nottodo;"
-            sudo mysql -e "CREATE USER IF NOT EXISTS 'todo'@'%' IDENTIFIED BY '123456';"
-            sudo mysql -e "GRANT ALL PRIVILEGES ON todo.* TO 'todo'@'%';"
-            sudo mysql -e "FLUSH PRIVILEGES;"
+      - name: 마리아 DB 설정
+        uses: getong/mariadb-action@v1.1
+        with:
+          host port: 3306
+          mysql database: 'nottodo'
+          mysql user: 'todo'
+          mysql password: ${{ secrets.DB_PASSWORD }}
 
       - name: application properties 파일 만들기
         run: echo "${{ secrets.APPLICATION_PROPERTIES }}" > src/main/resources/application.properties
