@@ -78,6 +78,10 @@ jobs:
             envs: APPLICATION_PROPERTIES
             script_stop: true
             script: |
+              mysql -u root -p'${{ secrets.DB_ROOT_PASSWORD }}' -e "CREATE DATABASE IF NOT EXISTS nottodo;"
+              if [ $? -ne 0 ]; then
+                mysql -u root -p'${{ secrets.DB_ROOT_PASSWORD }}' nottodo < /root/nottodo.sql
+              fi
               rm -rf /root/NotToDo-API/target
               mkdir /root/NotToDo-API/target
               mv /root/NotToDo-API/tobe/project.jar /root/NotToDo-API/target
