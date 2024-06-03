@@ -23,6 +23,7 @@ jobs:
         uses: getong/mariadb-action@v1.1
         with:
           host port: 3306
+          container port: 3306
           mysql database: 'nottodo'
           mysql user: 'todo'
           mysql password: ${{ secrets.DB_PASSWORD }}
