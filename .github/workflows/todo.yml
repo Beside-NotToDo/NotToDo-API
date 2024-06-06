@@ -79,9 +79,10 @@ jobs:
             script_stop: true
             script: |
               sudo systemctl restart mariadb
-              mysql -u root -p'${{ secrets.DB_ROOT_PASSWORD }}' -e "CREATE DATABASE IF NOT EXISTS nottodo;"
+              sudo mysql -u root -p'${{ secrets.DB_ROOT_PASSWORD }}' -e "CREATE DATABASE IF NOT EXISTS nottodo;"
               if [ $? -ne 0 ]; then
-                mysql -u root -p'${{ secrets.DB_ROOT_PASSWORD }}' nottodo < /root/nottodo.sql
+                echo "여기 탔냐"
+                sudo mysql -u root -p'${{ secrets.DB_ROOT_PASSWORD }}' nottodo < /root/nottodo.sql
               fi
               rm -rf /root/NotToDo-API/target
               mkdir /root/NotToDo-API/target
