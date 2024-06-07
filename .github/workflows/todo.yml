@@ -82,8 +82,9 @@ jobs:
               db_exists=$(mysql -u root -p${{ secrets.DB_ROOT_PASSWORD }} -e "SHOW DATABASES LIKE 'nottodo';" | grep nottodo)
               if [ -z "$db_exists" ]; then
                 mysql -u root -p${{ secrets.DB_ROOT_PASSWORD }} -e "CREATE DATABASE nottodo;"
-              if [ $? -eq 0 ]; then
-                mysql -u root -p${{ secrets.DB_ROOT_PASSWORD }} nottodo < /root/nottodo.sql
+                if [ $? -eq 0 ]; then
+                  mysql -u root -p${{ secrets.DB_ROOT_PASSWORD }} nottodo < /root/nottodo.sql
+                fi
               fi
               rm -rf /root/NotToDo-API/target
               mkdir /root/NotToDo-API/target
