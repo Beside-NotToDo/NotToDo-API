@@ -79,13 +79,8 @@ jobs:
             script_stop: true
             script: |
               sudo systemctl restart mariadb
-              db_exists=$(mysql -u root -p${{ secrets.DB_ROOT_PASSWORD }} -e "SHOW DATABASES LIKE 'nottodo';" | grep nottodo)
-              if [ -z "$db_exists" ]; then
-                mysql -u root -p${{ secrets.DB_ROOT_PASSWORD }} -e "CREATE DATABASE nottodo;"
-                if [ $? -eq 0 ]; then
-                  mysql -u root -p${{ secrets.DB_ROOT_PASSWORD }} nottodo < /root/nottodo.sql
-                fi
-              fi
+              chmod +x setup.sh
+              ./setup.sh
               rm -rf /root/NotToDo-API/target
               mkdir /root/NotToDo-API/target
               mv /root/NotToDo-API/tobe/project.jar /root/NotToDo-API/target
