@@ -13,7 +13,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class MemberContext implements UserDetails {
     private final MemberDto memberDto;
-    
+    //
     private final List<GrantedAuthority> authorities;
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
