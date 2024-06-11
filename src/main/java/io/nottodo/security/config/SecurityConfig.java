@@ -52,8 +52,8 @@ public class SecurityConfig {
         managerBuilder.authenticationProvider(appleAuthenticationProvider);
         AuthenticationManager manager = managerBuilder.build();
         
-        http.authorizeHttpRequests(auth -> auth.
-                        anyRequest().access(restAuthorizationManager))
+        http.authorizeHttpRequests(auth -> auth
+                        .anyRequest().access(restAuthorizationManager))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(kaKaoAuthenticationFilter(manager,macSecuritySigner,octetSequenceKey), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(appleAuthenticationFilter(manager,macSecuritySigner,octetSequenceKey), UsernamePasswordAuthenticationFilter.class)

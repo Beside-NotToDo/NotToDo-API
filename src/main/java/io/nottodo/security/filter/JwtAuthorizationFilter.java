@@ -16,6 +16,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.lang.reflect.Array;
+import java.util.List;
+
 @Component
 @RequiredArgsConstructor
 public class JwtAuthorizationFilter extends OncePerRequestFilter {
@@ -23,17 +26,18 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
     private  ObjectMapper objectMapper = new ObjectMapper();
     
     
-    
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
             throws ServletException, IOException {
+        List<String> urlList = List.of("/kakao/login", "/apple/login","/api-docs.html", "/v3/api-docs", "/swagger-ui");
         String requestURI = request.getRequestURI();
-        if ("/kakao/login".equals(requestURI) || "/apple/login".equals(requestURI)) {
-            filterChain.doFilter(request, response);
-            return;
+        
+        for (String url : urlList) {
+            if (requestURI.startsWith(url)) {
+               filterChain.doFilter(request,response);
+               return;
+            }
         }
-        
-        
         String token = request.getHeader("Authorization");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         response.setContentType("application/json");
