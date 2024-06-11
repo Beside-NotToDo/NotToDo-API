@@ -31,7 +31,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
             throws ServletException, IOException {
         List<String> urlList = List.of("/kakao/login", "/apple/login","/api-docs.html", "/v3/api-docs", "/swagger-ui");
         String requestURI = request.getRequestURI();
-        
+        //테스
         for (String url : urlList) {
             if (requestURI.startsWith(url)) {
                filterChain.doFilter(request,response);
