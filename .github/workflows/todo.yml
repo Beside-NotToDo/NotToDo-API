@@ -50,7 +50,9 @@ jobs:
         run: chmod +x gradlew
 
       - name: gradle 빌드
-        run: ./gradlew clean build
+        env:
+          SPRING_JPA_HIBERNATE_DDL_AUTO: update
+        run: ./gradlew clean build --stacktrace --info
 
       - name: 빌드된 파일 이름 변경
         run: mv ./build/libs/*SNAPSHOT.jar ./project.jar
