@@ -45,7 +45,7 @@ jobs:
       - name: MariaDB 권한 설정
         run: |
           container_id=$(docker ps -qf "ancestor=mariadb:10.4.10")
-          docker exec $container_id mysql -uroot -p1234 -e "GRANT ALL PRIVILEGES ON nottodo.* TO 'todo'@'%' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}'; FLUSH PRIVILEGES;"
+          docker exec $container_id mysql -uroot -p123456 -e "GRANT ALL PRIVILEGES ON nottodo.* TO 'todo'@'%' IDENTIFIED BY '${{ secrets.DB_PASSWORD }}'; FLUSH PRIVILEGES;"
 
       - name: gradle 권한 추가
         run: chmod +x gradlew
